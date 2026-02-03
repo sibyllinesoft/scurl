@@ -14,7 +14,7 @@ pip install scurl
 Or with [pipx](https://pipx.pypa.io/) (recommended for CLI tools):
 
 ```bash
-pipx install scurl
+pipx install sibylline-scurl
 ```
 
 ## Usage
