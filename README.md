@@ -8,7 +8,7 @@ A secure curl wrapper with middleware support and HTML-to-markdown extraction.
 ## Installation
 
 ```bash
-pip install scurl
+pip install sibylline-scurl
 ```
 
 Or with [pipx](https://pipx.pypa.io/) (recommended for CLI tools):
@@ -98,5 +98,7 @@ Hacker News
 | `trafilatura` | Response | Extracts clean markdown from HTML |
 
 ## License
+
+Copyright 2026 [Sibylline Software](https://sibylline.dev)
 
 MIT
