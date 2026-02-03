@@ -1,5 +1,5 @@
 [project]
-name = "scurl"
+name = "sibylline-scurl"
 version = "0.1.0"
 description = "A secure curl wrapper with middleware support and HTML-to-markdown extraction"
 readme = "README.md"
