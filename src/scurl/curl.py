@@ -32,7 +32,13 @@ def parse_curl_args(args: list[str]) -> RequestContext:
         arg = args[i]
 
         # URL (positional or after flags)
+        # Accept URLs with scheme or bare hostnames (like curl does)
         if arg.startswith("http://") or arg.startswith("https://"):
+            url = arg
+            i += 1
+            continue
+        elif not arg.startswith("-") and ("." in arg or arg.startswith("localhost")) and not url:
+            # Bare hostname without scheme - curl defaults to http
             url = arg
             i += 1
             continue

@@ -139,6 +139,22 @@ class TestParseCurlArgs:
         assert ctx.headers == {}
         assert ctx.body is None
 
+    def test_bare_hostname(self):
+        """Bare hostname without scheme should be accepted like curl."""
+        ctx = parse_curl_args(["www.google.com"])
+
+        assert ctx.url == "www.google.com"
+
+    def test_bare_hostname_with_path(self):
+        ctx = parse_curl_args(["example.com/path/to/page"])
+
+        assert ctx.url == "example.com/path/to/page"
+
+    def test_localhost(self):
+        ctx = parse_curl_args(["localhost:8080"])
+
+        assert ctx.url == "localhost:8080"
+
     def test_unknown_flags_preserved(self):
         """Unknown flags should be preserved in curl_args for pass-through."""
         args = ["-v", "--compressed", "-L", "https://example.com"]
