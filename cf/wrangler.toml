@@ -1,0 +1,24 @@
+name = "scurl-api"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+
+[[containers]]
+class_name = "ScurlContainer"
+image = "./container/Dockerfile"
+max_instances = 1
+instance_type = "standard-1"  # 1 vCPU, 2GB RAM (lite only has 256MB)
+
+[[durable_objects.bindings]]
+name = "SCURL_CONTAINER"
+class_name = "ScurlContainer"
+
+[[kv_namespaces]]
+binding = "RATE_LIMIT"
+id = "9441195c21f544c19dddebfa900b9c74"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["ScurlContainer"]
+
+[assets]
+directory = "./public"

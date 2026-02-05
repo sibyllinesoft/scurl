@@ -1,0 +1,2 @@
+# Build artifacts - wheel is copied in before docker build
+*.whl

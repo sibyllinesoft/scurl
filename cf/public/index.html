@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>scurl - Prompt Injection Scanner</title>
+  <meta name="description" content="Scan URLs and text for prompt injection attacks. Powered by scurl.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <main>
+    <div class="container">
+      <section class="hero">
+        <h1>Prompt Injection Scanner</h1>
+        <p class="hero-subtitle">powered by <a href="https://github.com/sibyllinesoft/scurl" target="_blank" rel="noopener">scurl</a></p>
+        <p class="hero-body">Any text an LLM reads is a potential attack surface. Prompt injection hides instructions inside web pages, documents, and user input&mdash;hijacking model behavior without the user or developer noticing. This tool scans content before it reaches your model.</p>
+        <p class="hero-body">The API is free to use. POST a URL to <code>/api/fetch</code> or raw text to <code>/api/convert</code> and get back cleaned markdown plus an injection analysis with score, signals, and action taken. See the <a href="https://github.com/sibyllinesoft/scurl" target="_blank" rel="noopener">docs</a> for details.</p>
+      </section>
+
+      <div class="form-container">
+        <div class="tabs">
+          <button class="tab active" data-tab="url">URL</button>
+          <button class="tab" data-tab="paste">Paste</button>
+        </div>
+
+        <form id="fetch-form">
+          <div id="tab-url" class="tab-panel active">
+            <div class="form-group">
+              <input
+                type="url"
+                id="url-input"
+                class="url-input"
+                placeholder="https://example.com"
+                autocomplete="url"
+              >
+              <button type="submit" id="submit-btn" class="btn btn-primary">
+                Scan
+              </button>
+            </div>
+            <label class="checkbox-label">
+              <input type="checkbox" id="render-checkbox" checked>
+              Render page (headless browser)
+            </label>
+          </div>
+
+          <div id="tab-paste" class="tab-panel">
+            <textarea
+              id="paste-input"
+              class="paste-input"
+              placeholder="Paste text or HTML to scan for prompt injection..."
+              rows="8"
+            ></textarea>
+            <button type="submit" id="paste-submit-btn" class="btn btn-primary" style="margin-top: var(--space-sm); width: 100%;">
+              Scan
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <div id="loading" class="loading">
+        <div class="spinner"></div>
+        <span>Scanning for prompt injection...</span>
+      </div>
+
+      <div id="error" class="error-container">
+        <div class="error-title">Error</div>
+        <div id="error-message" class="error-message"></div>
+      </div>
+
+      <div id="result" class="result-container">
+        <div class="result-header">
+          <h2>Result</h2>
+          <div class="result-actions">
+            <button id="copy-btn" class="btn btn-secondary">Copy</button>
+            <button id="download-btn" class="btn btn-secondary">Download</button>
+          </div>
+        </div>
+        <div id="result-meta" class="result-meta"></div>
+        <div id="injection-status" class="injection-status"></div>
+        <div class="result-content">
+          <pre id="result-content"></pre>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p><a href="https://sibylline.dev" target="_blank" rel="noopener">Sibylline Software</a></p>
+    </div>
+  </footer>
+
+  <div id="copy-feedback" class="copy-feedback">Copied to clipboard</div>
+
+  <script src="/app.js"></script>
+</body>
+</html>
