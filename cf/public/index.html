@@ -17,7 +17,77 @@
         <h1>Prompt Injection Scanner</h1>
         <p class="hero-subtitle">powered by <a href="https://github.com/sibyllinesoft/scurl" target="_blank" rel="noopener">scurl</a></p>
         <p class="hero-body">Any text an LLM reads is a potential attack surface. Prompt injection hides instructions inside web pages, documents, and user input&mdash;hijacking model behavior without the user or developer noticing. This tool scans content before it reaches your model.</p>
-        <p class="hero-body">The API is free to use. POST a URL to <code>/api/fetch</code> or raw text to <code>/api/convert</code> and get back cleaned markdown plus an injection analysis with score, signals, and action taken. See the <a href="https://github.com/sibyllinesoft/scurl" target="_blank" rel="noopener">docs</a> for details.</p>
+        <p class="hero-body">The API is free to use. POST a URL to <code>/api/fetch</code> or raw text to <code>/api/convert</code> and get back cleaned markdown plus an injection analysis with score, signals, and action taken.</p>
+      </section>
+
+      <section class="api-examples">
+        <h2>API Usage</h2>
+        <div class="code-tabs">
+          <button class="code-tab active" data-lang="curl">curl</button>
+          <button class="code-tab" data-lang="python">Python</button>
+          <button class="code-tab" data-lang="javascript">JavaScript</button>
+        </div>
+        <div class="code-panels">
+          <div class="code-panel active" data-lang="curl">
+            <div class="code-block">
+              <button class="copy-code-btn" aria-label="Copy code">Copy</button>
+              <pre><code># Scan a URL
+curl -X POST https://clean.sibylline.dev/api/fetch \
+  -H "Content-Type: application/json" \
+  -d '{"url": "https://example.com", "render": true}'
+
+# Scan raw text
+curl -X POST https://clean.sibylline.dev/api/convert \
+  -H "Content-Type: application/json" \
+  -d '{"text": "Your content here"}'</code></pre>
+            </div>
+          </div>
+          <div class="code-panel" data-lang="python">
+            <div class="code-block">
+              <button class="copy-code-btn" aria-label="Copy code">Copy</button>
+              <pre><code>import requests
+
+# Scan a URL
+resp = requests.post("https://clean.sibylline.dev/api/fetch", json={
+    "url": "https://example.com",
+    "render": True
+})
+data = resp.json()
+print(f"Score: {data['injection']['score']}")
+print(f"Flagged: {data['injection']['flagged']}")
+
+# Scan raw text
+resp = requests.post("https://clean.sibylline.dev/api/convert", json={
+    "text": "Your content here"
+})
+data = resp.json()
+print(data["markdown"])</code></pre>
+            </div>
+          </div>
+          <div class="code-panel" data-lang="javascript">
+            <div class="code-block">
+              <button class="copy-code-btn" aria-label="Copy code">Copy</button>
+              <pre><code>// Scan a URL
+const resp = await fetch("https://clean.sibylline.dev/api/fetch", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ url: "https://example.com", render: true })
+});
+const data = await resp.json();
+console.log(`Score: ${data.injection.score}`);
+console.log(`Flagged: ${data.injection.flagged}`);
+
+// Scan raw text
+const resp2 = await fetch("https://clean.sibylline.dev/api/convert", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ text: "Your content here" })
+});
+const data2 = await resp2.json();
+console.log(data2.markdown);</code></pre>
+            </div>
+          </div>
+        </div>
       </section>
 
       <div class="form-container">

@@ -162,3 +162,45 @@ downloadBtn.addEventListener('click', () => {
 });
 
 urlInput.focus();
+
+// Code example tabs
+const codeTabs = document.querySelectorAll('.code-tab');
+const codePanels = document.querySelectorAll('.code-panel');
+
+codeTabs.forEach(tab => {
+  tab.addEventListener('click', () => {
+    const lang = tab.dataset.lang;
+    codeTabs.forEach(t => t.classList.toggle('active', t.dataset.lang === lang));
+    codePanels.forEach(p => p.classList.toggle('active', p.dataset.lang === lang));
+  });
+});
+
+// Copy code buttons
+document.querySelectorAll('.copy-code-btn').forEach(btn => {
+  btn.addEventListener('click', async () => {
+    const code = btn.parentElement.querySelector('code').textContent;
+    try {
+      await navigator.clipboard.writeText(code);
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = 'Copy';
+        btn.classList.remove('copied');
+      }, 2000);
+    } catch {
+      // Fallback
+      const textarea = document.createElement('textarea');
+      textarea.value = code;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = 'Copy';
+        btn.classList.remove('copied');
+      }, 2000);
+    }
+  });
+});
