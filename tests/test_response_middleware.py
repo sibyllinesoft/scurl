@@ -2,7 +2,7 @@
 
 import pytest
 from scurl.middleware import ResponseContext
-from scurl.response_middleware import TrafilaturaExtractor, JsonPrettifier
+from scurl.response_middleware import ReadabilityExtractor, JsonPrettifier
 
 
 def make_response_context(
@@ -21,13 +21,13 @@ def make_response_context(
     )
 
 
-class TestTrafilaturaExtractor:
+class TestReadabilityExtractor:
     def test_name(self):
-        extractor = TrafilaturaExtractor()
-        assert extractor.name == "TrafilaturaExtractor"
+        extractor = ReadabilityExtractor()
+        assert extractor.name == "ReadabilityExtractor"
 
     def test_should_process_html(self):
-        extractor = TrafilaturaExtractor()
+        extractor = ReadabilityExtractor()
 
         html_ctx = make_response_context(b"<html>", content_type="text/html")
         assert extractor.should_process(html_ctx) is True
@@ -38,22 +38,22 @@ class TestTrafilaturaExtractor:
         assert extractor.should_process(html_charset_ctx) is True
 
     def test_should_not_process_json(self):
-        extractor = TrafilaturaExtractor()
+        extractor = ReadabilityExtractor()
         json_ctx = make_response_context(b"{}", content_type="application/json")
         assert extractor.should_process(json_ctx) is False
 
     def test_should_not_process_plain_text(self):
-        extractor = TrafilaturaExtractor()
+        extractor = ReadabilityExtractor()
         text_ctx = make_response_context(b"hello", content_type="text/plain")
         assert extractor.should_process(text_ctx) is False
 
     def test_should_not_process_none_content_type(self):
-        extractor = TrafilaturaExtractor()
+        extractor = ReadabilityExtractor()
         ctx = make_response_context(b"<html>", content_type=None)
         assert extractor.should_process(ctx) is False
 
     def test_extracts_content_from_html(self):
-        extractor = TrafilaturaExtractor()
+        extractor = ReadabilityExtractor()
         html = b"""
         <!DOCTYPE html>
         <html>
@@ -77,7 +77,7 @@ class TestTrafilaturaExtractor:
         assert "Main Article Title" in text or "main content" in text.lower()
 
     def test_returns_original_on_extraction_failure(self):
-        extractor = TrafilaturaExtractor()
+        extractor = ReadabilityExtractor()
         # Minimal HTML that trafilatura can't extract meaningful content from
         html = b"<html><body></body></html>"
         ctx = make_response_context(html, content_type="text/html")
@@ -87,7 +87,7 @@ class TestTrafilaturaExtractor:
         assert result.body is not None
 
     def test_handles_utf8_content(self):
-        extractor = TrafilaturaExtractor()
+        extractor = ReadabilityExtractor()
         html = """
         <!DOCTYPE html>
         <html>
@@ -106,8 +106,32 @@ class TestTrafilaturaExtractor:
         # At minimum, shouldn't have encoding errors
         assert "�" not in text or len(text) > 0
 
+    def test_preserves_hyperlinks_in_markdown(self):
+        """Test that hyperlinks are preserved in extracted markdown."""
+        extractor = ReadabilityExtractor(include_links=True)
+        html = b"""
+        <!DOCTYPE html>
+        <html>
+        <head><title>Test Page</title></head>
+        <body>
+            <article>
+                <h1>Article with Links</h1>
+                <p>Check out <a href="https://example.com">Example Site</a> for more info.</p>
+                <p>Also visit <a href="https://github.com">GitHub</a> for code.</p>
+            </article>
+        </body>
+        </html>
+        """
+        ctx = make_response_context(html, content_type="text/html")
+        result = extractor.process(ctx)
+
+        text = result.body.decode("utf-8")
+        # Links should be in markdown format
+        assert "[Example Site](https://example.com)" in text or "https://example.com" in text
+        assert "[GitHub](https://github.com)" in text or "https://github.com" in text
+
     def test_sets_markdown_content_type(self):
-        extractor = TrafilaturaExtractor()
+        extractor = ReadabilityExtractor()
         html = b"""
         <!DOCTYPE html>
         <html>

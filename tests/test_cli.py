@@ -21,19 +21,19 @@ class TestExtractScurlFlags:
         assert remaining == ["https://example.com"]
 
     def test_disable_single(self):
-        flags, remaining = extract_scurl_flags(["--disable", "trafilatura", "https://example.com"])
+        flags, remaining = extract_scurl_flags(["--disable", "readability", "https://example.com"])
 
-        assert "trafilatura" in flags.disable
+        assert "readability" in flags.disable
         assert remaining == ["https://example.com"]
 
     def test_disable_multiple(self):
         flags, remaining = extract_scurl_flags([
-            "--disable", "trafilatura",
+            "--disable", "readability",
             "--disable", "secret-defender",
             "https://example.com"
         ])
 
-        assert flags.disable == {"trafilatura", "secret-defender"}
+        assert flags.disable == {"readability", "secret-defender"}
         assert remaining == ["https://example.com"]
 
     def test_enable_single(self):
@@ -81,13 +81,13 @@ class TestExtractScurlFlags:
         flags, remaining = extract_scurl_flags([
             "--raw",
             "-H", "Accept: text/html",
-            "--disable", "trafilatura",
+            "--disable", "readability",
             "-v",
             "https://example.com",
         ])
 
         assert flags.raw is True
-        assert "trafilatura" in flags.disable
+        assert "readability" in flags.disable
         assert remaining == ["-H", "Accept: text/html", "-v", "https://example.com"]
 
     def test_curl_flags_preserved(self):
@@ -124,7 +124,7 @@ class TestRunHelp:
         assert result == 0
         captured = capsys.readouterr()
         assert "secret-defender" in captured.out
-        assert "trafilatura" in captured.out
+        assert "readability" in captured.out
 
 
 class TestRunErrors:
@@ -192,8 +192,8 @@ class TestSecretDefenderIntegration:
 
 
 class TestResponseMiddlewareIntegration:
-    def test_disable_trafilatura(self, capsys, mocker):
-        """--disable trafilatura should return raw HTML."""
+    def test_disable_readability(self, capsys, mocker):
+        """--disable readability should return raw HTML."""
         mock_result = mocker.MagicMock()
         mock_result.return_code = 0
         mock_result.body = b"<html><body>Hello</body></html>"
@@ -205,7 +205,7 @@ class TestResponseMiddlewareIntegration:
 
         mocker.patch("scurl.cli.execute_curl", return_value=mock_result)
 
-        result = run(["--disable", "trafilatura", "https://example.com"])
+        result = run(["--disable", "readability", "https://example.com"])
 
         assert result == 0
         captured = capsys.readouterr()

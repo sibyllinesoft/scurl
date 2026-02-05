@@ -10,7 +10,8 @@ from .middleware import (
     RequestAction,
 )
 from .request_middleware import SecretDefender
-from .response_middleware import TrafilaturaExtractor
+from .response_middleware import ReadabilityExtractor
+from .prompt_defender import PromptInjectionDefender
 from .curl import parse_curl_args, execute_curl, curl_result_to_response_context
 
 
@@ -20,7 +21,8 @@ REQUEST_MIDDLEWARE = {
 }
 
 RESPONSE_MIDDLEWARE = {
-    "trafilatura": ("TrafilaturaExtractor", "Extracts clean markdown from HTML", TrafilaturaExtractor),
+    "readability": ("ReadabilityExtractor", "Extracts clean markdown from HTML", ReadabilityExtractor),
+    "prompt-defender": ("PromptInjectionDefender", "Detects prompt injection in web content", PromptInjectionDefender),
 }
 
 
@@ -39,10 +41,14 @@ def print_middleware_list() -> None:
 class ScurlFlags:
     """Parsed scurl-specific flags."""
     raw: bool = False
+    render: bool = False
     disable: set[str] = field(default_factory=set)
     enable: set[str] = field(default_factory=set)
     list_middleware: bool = False
     help: bool = False
+    # Prompt injection defender options
+    injection_threshold: float = 0.7
+    injection_action: str = "redact"  # "warn", "redact", "datamark", "metadata", "silent"
 
 
 def extract_scurl_flags(args: list[str]) -> tuple[ScurlFlags, list[str]]:
@@ -55,6 +61,9 @@ def extract_scurl_flags(args: list[str]) -> tuple[ScurlFlags, list[str]]:
         arg = args[i]
         if arg == "--raw":
             flags.raw = True
+            i += 1
+        elif arg == "--render":
+            flags.render = True
             i += 1
         elif arg == "--disable":
             if i + 1 < len(args):
@@ -69,6 +78,23 @@ def extract_scurl_flags(args: list[str]) -> tuple[ScurlFlags, list[str]]:
                 i += 2
             else:
                 remaining.append(arg)
+                i += 1
+        elif arg == "--injection-threshold":
+            if i + 1 < len(args):
+                try:
+                    flags.injection_threshold = float(args[i + 1])
+                except ValueError:
+                    pass  # Keep default
+                i += 2
+            else:
+                i += 1
+        elif arg == "--injection-action":
+            if i + 1 < len(args):
+                action = args[i + 1].lower()
+                if action in ("warn", "redact", "datamark", "metadata", "silent"):
+                    flags.injection_action = action
+                i += 2
+            else:
                 i += 1
         elif arg == "--list-middleware":
             flags.list_middleware = True
@@ -92,19 +118,31 @@ def print_help() -> None:
     print()
     print("scurl-specific options:")
     print("  --raw                  Disable all response middleware (raw curl output)")
+    print("  --render               Use headless browser for JS-rendered pages")
     print("  --disable <middleware>  Disable a middleware by slug (can be repeated)")
-    print("  --enable <middleware>  Override a middleware's block (can be repeated)")
+    print("  --enable <middleware>  Enable an opt-in middleware (can be repeated)")
     print("  --list-middleware      List available middleware and their slugs")
     print("  --help, -h             Show this help (use curl --help for curl options)")
+    print()
+    print("Prompt injection detection (requires --enable prompt-defender):")
+    print("  --injection-threshold <0.0-1.0>  Detection threshold (default: 0.7)")
+    print("  --injection-action <action>      Action on detection (default: redact):")
+    print("                                     warn     - wrap in <suspected-prompt-injection> tag, content unchanged")
+    print("                                     redact   - wrap in <suspected-prompt-injection> tag, mask patterns with █")
+    print("                                     datamark - wrap in <suspected-prompt-injection> tag, spotlighting mode")
+    print("                                     metadata - return JSON analysis")
+    print("                                     silent   - pass through unchanged")
     print()
     print("All other options are passed directly to curl.")
     print()
     print("Examples:")
     print("  scurl https://example.com                    # Fetch and extract markdown")
     print("  scurl --raw https://example.com              # Raw HTML output")
-    print("  scurl --disable trafilatura https://example.com # Disable markdown extraction")
-    print("  scurl --disable secret-defender https://...     # Disable secret scanning")
-    print("  scurl --enable secret-defender https://...   # Override a secret block")
+    print("  scurl --disable trafilatura https://...      # Disable markdown extraction")
+    print("  scurl --disable secret-defender https://...  # Disable secret scanning")
+    print("  scurl --enable prompt-defender https://...   # Enable injection detection")
+    print("  scurl --render https://github.com/user/repo    # Render JS-heavy pages")
+    print("  scurl --enable prompt-defender --injection-threshold 0.5 https://...")
     print("  scurl -H 'Accept: application/json' https://api.example.com/data")
 
 
@@ -154,8 +192,12 @@ def run(args: Optional[list[str]] = None) -> int:
     if result.context:
         context = result.context
 
-    # Execute curl
-    curl_result = execute_curl(context)
+    # Execute fetch (curl or browser)
+    if flags.render:
+        from .browser import execute_browser
+        curl_result = execute_browser(context)
+    else:
+        curl_result = execute_curl(context)
 
     if curl_result.return_code != 0 and curl_result.return_code != -1:
         # curl failed but not our timeout/not-found
@@ -170,8 +212,14 @@ def run(args: Optional[list[str]] = None) -> int:
     # Build response middleware chain
     response_chain = ResponseMiddlewareChain()
     if not flags.raw:
-        if "trafilatura" not in flags.disable:
-            response_chain.add(TrafilaturaExtractor())
+        if "readability" not in flags.disable:
+            response_chain.add(ReadabilityExtractor())
+        # Prompt defender is opt-in (requires --enable)
+        if "prompt-defender" in flags.enable:
+            response_chain.add(PromptInjectionDefender(
+                threshold=flags.injection_threshold,
+                action=flags.injection_action,
+            ))
 
     # Execute response middleware
     response_context = curl_result_to_response_context(curl_result)
