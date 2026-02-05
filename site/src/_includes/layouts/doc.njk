@@ -1,0 +1,38 @@
+---
+layout: base.njk
+---
+<div class="docs-layout">
+  <aside class="docs-sidebar">
+    <nav class="docs-nav">
+      <h3>Documentation</h3>
+      <ul>
+        {%- for doc in collections.docs %}
+        <li>
+          <a href="{{ doc.url }}" {% if doc.url == page.url %}class="active"{% endif %}>
+            {{ doc.data.navTitle or doc.data.title }}
+          </a>
+        </li>
+        {%- endfor %}
+      </ul>
+    </nav>
+  </aside>
+
+  <article class="docs-content">
+    <header class="doc-header">
+      <h1>{{ title }}</h1>
+      {% if description %}
+      <p class="doc-description">{{ description }}</p>
+      {% endif %}
+    </header>
+
+    <div class="doc-body prose">
+      {{ content | safe }}
+    </div>
+
+    <footer class="doc-footer">
+      <a href="https://github.com/sibyllinesoft/scurl/edit/main/docs/{{ page.inputPath | replace('src/docs/', '') }}" class="edit-link">
+        Edit this page on GitHub
+      </a>
+    </footer>
+  </article>
+</div>

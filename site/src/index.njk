@@ -1,0 +1,69 @@
+---
+layout: base.njk
+title: Home
+---
+
+<section class="hero">
+  <div class="container">
+    <h1><span class="logo-icon">$</span> scurl</h1>
+    <p class="tagline">A secure curl wrapper with middleware support and prompt injection detection</p>
+
+    <div class="hero-actions">
+      <a href="/docs/primer/" class="btn btn-primary">Read the Docs</a>
+      <a href="https://github.com/sibyllinesoft/scurl" class="btn btn-secondary">View on GitHub</a>
+    </div>
+
+    <div class="install-snippet">
+      <pre><code class="language-bash">pip install sibylline-scurl</code></pre>
+    </div>
+  </div>
+</section>
+
+<section class="container">
+  <div class="features">
+    <div class="feature-card">
+      <h3>Secure by Default</h3>
+      <p>Scans requests for accidentally leaked secrets like API keys, tokens, and credentials before they leave your machine.</p>
+    </div>
+
+    <div class="feature-card">
+      <h3>Prompt Injection Detection</h3>
+      <p>ML-powered detection of prompt injection attacks in fetched content, protecting AI agents from malicious web content.</p>
+    </div>
+
+    <div class="feature-card">
+      <h3>Clean Markdown Output</h3>
+      <p>Automatically extracts clean, readable markdown from HTML pages using trafilatura—perfect for LLM consumption.</p>
+    </div>
+
+    <div class="feature-card">
+      <h3>Drop-in Replacement</h3>
+      <p>Uses the same CLI interface as curl. Just replace <code>curl</code> with <code>scurl</code> in your scripts.</p>
+    </div>
+
+    <div class="feature-card">
+      <h3>Middleware Architecture</h3>
+      <p>Extensible request and response middleware chains. Enable, disable, or add custom middleware as needed.</p>
+    </div>
+
+    <div class="feature-card">
+      <h3>Lightweight</h3>
+      <p>Core functionality has minimal dependencies. ML features are optional and only loaded when needed.</p>
+    </div>
+  </div>
+</section>
+
+<section class="container" style="padding-bottom: var(--space-3xl);">
+  <h2 style="text-align: center;">Quick Example</h2>
+  <pre><code class="language-bash"># Fetch a webpage and get clean markdown
+scurl https://example.com
+
+# Raw HTML output (bypass markdown extraction)
+scurl --raw https://example.com
+
+# Enable prompt injection detection
+scurl --enable prompt-defender https://untrusted-site.com
+
+# Detect and redact injection attempts
+scurl --enable prompt-defender --injection-action redact https://suspicious-site.com</code></pre>
+</section>

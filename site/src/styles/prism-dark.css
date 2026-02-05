@@ -1,0 +1,159 @@
+/* Prism.js Dark Theme - Sibylline Style */
+
+code[class*="language-"],
+pre[class*="language-"] {
+  color: #e4e4e7;
+  background: none;
+  font-family: 'JetBrains Mono', 'SF Mono', Monaco, Consolas, monospace;
+  font-size: 0.875rem;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  word-wrap: normal;
+  line-height: 1.6;
+  tab-size: 2;
+  hyphens: none;
+}
+
+pre[class*="language-"] {
+  padding: 1rem;
+  margin: 0 0 1.5rem;
+  overflow: auto;
+  border-radius: 0.5rem;
+  background: #0f0f0f;
+}
+
+:not(pre) > code[class*="language-"] {
+  padding: 0.15em 0.4em;
+  border-radius: 0.25rem;
+  white-space: normal;
+  background: #242424;
+}
+
+/* Tokens */
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+  color: #6b7280;
+}
+
+.token.punctuation {
+  color: #9ca3af;
+}
+
+.token.namespace {
+  opacity: 0.7;
+}
+
+.token.property,
+.token.tag,
+.token.boolean,
+.token.number,
+.token.constant,
+.token.symbol,
+.token.deleted {
+  color: #f472b6;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+  color: #a5f3fc;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string {
+  color: #fcd34d;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.keyword {
+  color: #818cf8;
+}
+
+.token.function,
+.token.class-name {
+  color: #c4b5fd;
+}
+
+.token.regex,
+.token.important,
+.token.variable {
+  color: #f9a8d4;
+}
+
+.token.important,
+.token.bold {
+  font-weight: bold;
+}
+
+.token.italic {
+  font-style: italic;
+}
+
+.token.entity {
+  cursor: help;
+}
+
+/* Line highlighting */
+.highlight-line {
+  background: rgba(99, 102, 241, 0.1);
+  display: block;
+  margin: 0 -1rem;
+  padding: 0 1rem;
+}
+
+/* Line numbers */
+pre[class*="language-"].line-numbers {
+  position: relative;
+  padding-left: 3.5rem;
+  counter-reset: linenumber;
+}
+
+pre[class*="language-"].line-numbers > code {
+  position: relative;
+  white-space: inherit;
+}
+
+.line-numbers .line-numbers-rows {
+  position: absolute;
+  pointer-events: none;
+  top: 1rem;
+  left: 0;
+  width: 2.5rem;
+  font-size: 100%;
+  letter-spacing: -1px;
+  border-right: 1px solid #2e2e2e;
+  user-select: none;
+}
+
+.line-numbers-rows > span {
+  display: block;
+  counter-increment: linenumber;
+}
+
+.line-numbers-rows > span::before {
+  content: counter(linenumber);
+  color: #525252;
+  display: block;
+  padding-right: 0.8rem;
+  text-align: right;
+}
+
+/* Diff highlighting */
+.token.deleted {
+  background: rgba(248, 113, 113, 0.1);
+}
+
+.token.inserted {
+  background: rgba(74, 222, 128, 0.1);
+}

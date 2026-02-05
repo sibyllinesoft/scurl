@@ -1,0 +1,17 @@
+{
+  "name": "scurl-docs",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Documentation site for scurl - secure curl wrapper",
+  "scripts": {
+    "start": "eleventy --serve --port=8092",
+    "build": "eleventy",
+    "build:production": "NODE_ENV=production eleventy"
+  },
+  "devDependencies": {
+    "@11ty/eleventy": "^3.0.0",
+    "@11ty/eleventy-plugin-syntaxhighlight": "^5.0.0",
+    "@11ty/eleventy-navigation": "^0.3.5",
+    "markdown-it-anchor": "^9.0.1"
+  }
+}
