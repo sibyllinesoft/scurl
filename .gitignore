@@ -41,3 +41,10 @@ htmlcov/
 # OS
 .DS_Store
 Thumbs.db
+
+# Generated docs site
+site/node_modules/
+site/_site/
+
+# Arbiter (project management)
+.arbiter/
