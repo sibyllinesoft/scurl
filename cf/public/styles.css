@@ -470,6 +470,26 @@ footer {
 }
 
 /* --------------------------------------------------------------------------
+   API Intro
+   -------------------------------------------------------------------------- */
+.api-intro {
+  color: var(--text-secondary);
+  font-size: var(--text-sm);
+  line-height: 1.6;
+  margin-top: var(--space-xl);
+  margin-bottom: var(--space-lg);
+  text-align: center;
+}
+
+.api-intro code {
+  background: var(--bg-tertiary);
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+}
+
+/* --------------------------------------------------------------------------
    API Examples
    -------------------------------------------------------------------------- */
 .api-examples {
