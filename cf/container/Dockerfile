@@ -6,7 +6,7 @@ WORKDIR /app
 
 # Install scurl from local wheel with browser extra
 COPY *.whl /tmp/
-RUN pip install --no-cache-dir "/tmp/sibylline_scurl-0.1.1-py3-none-any.whl[browser,prompt-defender]" numpy && \
+RUN pip install --no-cache-dir "/tmp/sibylline_scurl-0.2.0-py3-none-any.whl[browser,prompt-defender]" numpy && \
     playwright install chromium --only-shell && \
     playwright install-deps chromium && \
     rm -f /tmp/*.whl
