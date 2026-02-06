@@ -11,8 +11,13 @@ RUN pip install --no-cache-dir "/tmp/sibylline_scurl-0.1.1-py3-none-any.whl[brow
     playwright install-deps chromium && \
     rm -f /tmp/*.whl
 
-# Note: ONNX model (~1.2GB) downloads on first request to stay under 2GB image limit
-# Cold start will be slower but subsequent requests use cached model
+# Download ONNX model and convert to single file with inlined weights
+# This avoids external data path issues at runtime
+COPY inline_model.py /tmp/
+RUN pip install --no-cache-dir onnx && \
+    python /tmp/inline_model.py && \
+    rm /tmp/inline_model.py && \
+    pip uninstall -y onnx protobuf
 
 COPY server.py .
 

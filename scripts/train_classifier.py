@@ -50,6 +50,74 @@ def load_deepset_dataset():
     return dataset
 
 
+def load_additional_benign_data(target_count: int = 2000):
+    """Load additional benign text from diverse sources.
+
+    Samples from multiple datasets to get a variety of benign content:
+    - News articles (AG News)
+    - Movie reviews (IMDB)
+    - Social media (Tweet Eval)
+    - Business reviews (Yelp)
+
+    Returns list of (text, label=0) tuples.
+    """
+    from datasets import load_dataset
+    import random
+
+    random.seed(42)
+    benign_samples = []
+    samples_per_source = target_count // 4
+
+    print(f"\nLoading additional benign data (~{target_count} samples)...")
+
+    # AG News - news articles
+    print("  Loading AG News (news articles)...")
+    try:
+        ds = load_dataset("fancyzhx/ag_news", split="train")
+        samples = random.sample(range(len(ds)), min(samples_per_source, len(ds)))
+        for i in samples:
+            benign_samples.append(ds[i]["text"])
+        print(f"    Added {len(samples)} news articles")
+    except Exception as e:
+        print(f"    Warning: Could not load AG News: {e}")
+
+    # IMDB - movie reviews
+    print("  Loading IMDB (movie reviews)...")
+    try:
+        ds = load_dataset("stanfordnlp/imdb", split="train")
+        samples = random.sample(range(len(ds)), min(samples_per_source, len(ds)))
+        for i in samples:
+            benign_samples.append(ds[i]["text"])
+        print(f"    Added {len(samples)} movie reviews")
+    except Exception as e:
+        print(f"    Warning: Could not load IMDB: {e}")
+
+    # Tweet Eval - social media
+    print("  Loading Tweet Eval (social media)...")
+    try:
+        ds = load_dataset("cardiffnlp/tweet_eval", "sentiment", split="train")
+        samples = random.sample(range(len(ds)), min(samples_per_source, len(ds)))
+        for i in samples:
+            benign_samples.append(ds[i]["text"])
+        print(f"    Added {len(samples)} tweets")
+    except Exception as e:
+        print(f"    Warning: Could not load Tweet Eval: {e}")
+
+    # Yelp - business reviews (good for marketing-like content)
+    print("  Loading Yelp (business reviews)...")
+    try:
+        ds = load_dataset("Yelp/yelp_review_full", split="train")
+        samples = random.sample(range(len(ds)), min(samples_per_source, len(ds)))
+        for i in samples:
+            benign_samples.append(ds[i]["text"])
+        print(f"    Added {len(samples)} business reviews")
+    except Exception as e:
+        print(f"    Warning: Could not load Yelp: {e}")
+
+    print(f"  Total additional benign samples: {len(benign_samples)}")
+    return benign_samples
+
+
 def load_embedder(use_embeddings: bool):
     """Load the embedding model if available."""
     if not use_embeddings:
@@ -207,11 +275,34 @@ def main():
         default=100,
         help="Number of trees in Random Forest",
     )
+    parser.add_argument(
+        "--extra-benign",
+        type=int,
+        default=2000,
+        help="Number of additional benign samples to add from diverse sources",
+    )
+    parser.add_argument(
+        "--no-extra-benign",
+        action="store_true",
+        help="Skip loading additional benign data (use only deepset dataset)",
+    )
     args = parser.parse_args()
 
     # Load dataset
     dataset = load_deepset_dataset()
     print(f"  Loaded {len(dataset)} samples")
+
+    # Combine texts and labels
+    texts = list(dataset["text"])
+    labels = list(dataset["label"])
+
+    # Add additional benign samples
+    if not args.no_extra_benign and args.extra_benign > 0:
+        extra_benign = load_additional_benign_data(args.extra_benign)
+        texts.extend(extra_benign)
+        labels.extend([0] * len(extra_benign))  # label 0 = benign
+        print(f"\nCombined dataset: {len(texts)} samples")
+        print(f"  Benign: {labels.count(0)}, Injection: {labels.count(1)}")
 
     # Initialize components
     print("\nInitializing components...")
@@ -223,8 +314,8 @@ def main():
     # Extract features
     print("\nExtracting features...")
     X, y = extract_features(
-        dataset["text"],
-        dataset["label"],
+        texts,
+        labels,
         normalizer,
         pattern_extractor,
         motif_extractor,

@@ -85,7 +85,7 @@ class EmbeddingGemmaONNX:
             cache_dir=str(self._model_dir),
         )
 
-        # Also download the external data file
+        # Also download the external data file (must be in same dir as model.onnx)
         hf_hub_download(
             MODEL_ID,
             subfolder="onnx",

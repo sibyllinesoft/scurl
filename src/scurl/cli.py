@@ -47,7 +47,7 @@ class ScurlFlags:
     list_middleware: bool = False
     help: bool = False
     # Prompt injection defender options
-    injection_threshold: float = 0.7
+    injection_threshold: float = 0.5
     injection_action: str = "redact"  # "warn", "redact", "datamark", "metadata", "silent"
 
 
@@ -125,7 +125,7 @@ def print_help() -> None:
     print("  --help, -h             Show this help (use curl --help for curl options)")
     print()
     print("Prompt injection detection (requires --enable prompt-defender):")
-    print("  --injection-threshold <0.0-1.0>  Detection threshold (default: 0.7)")
+    print("  --injection-threshold <0.0-1.0>  Detection threshold (default: 0.5)")
     print("  --injection-action <action>      Action on detection (default: redact):")
     print("                                     warn     - wrap in <suspected-prompt-injection> tag, content unchanged")
     print("                                     redact   - wrap in <suspected-prompt-injection> tag, mask patterns with █")
