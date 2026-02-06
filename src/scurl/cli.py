@@ -47,7 +47,7 @@ class ScurlFlags:
     list_middleware: bool = False
     help: bool = False
     # Prompt injection defender options
-    injection_threshold: float = 0.5
+    injection_threshold: float = 0.3
     injection_action: str = "redact"  # "warn", "redact", "datamark", "metadata", "silent"
 
 

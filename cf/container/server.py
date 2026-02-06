@@ -18,7 +18,7 @@ MAX_CONVERT_SIZE = 256 * 1024  # 256 KB
 _defender = None
 
 
-def _get_defender(threshold: float = 0.5, action: str = "redact"):
+def _get_defender(threshold: float = 0.3, action: str = "redact"):
     """Return the singleton PromptInjectionDefender, creating it on first call."""
     global _defender
     if _defender is None:
@@ -62,7 +62,7 @@ class ScurlHandler(BaseHTTPRequestHandler):
             data = json.loads(body)
             url = data.get("url")
             render = data.get("render", True)
-            threshold = float(data.get("threshold", 0.5))
+            threshold = float(data.get("threshold", 0.3))
             action = data.get("action", "redact")
 
             if not url:
@@ -112,7 +112,7 @@ class ScurlHandler(BaseHTTPRequestHandler):
             data = json.loads(body)
             text = data.get("html") or data.get("text")
             action = data.get("action", "redact")
-            threshold = float(data.get("threshold", 0.5))
+            threshold = float(data.get("threshold", 0.3))
 
             if not text:
                 self._send_json(400, {"markdown": None, "error": "Missing 'html' or 'text' field", "injection": None})

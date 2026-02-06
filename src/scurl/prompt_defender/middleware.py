@@ -64,7 +64,7 @@ class PromptInjectionDefender(ResponseMiddleware):
 
     def __init__(
         self,
-        threshold: float = 0.5,
+        threshold: float = 0.3,
         action: str = "warn",
         use_embeddings: bool = True,
         use_windowing: bool = True,

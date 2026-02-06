@@ -1,51 +1,24 @@
 #!/usr/bin/env python3
-"""Download ONNX model and inline external weights."""
+"""Download MiniLM model for prompt injection detection."""
 
 from huggingface_hub import hf_hub_download
-import onnx
 from pathlib import Path
 
 cache = '/root/.cache/scurl/models'
 
-# Download Q4 quantized model (188MB vs 1.2GB full model)
-print('Downloading Q4 quantized model files...')
+# Download MiniLM-L6-v2 (86MB, single file - no external data)
+print('Downloading MiniLM-L6-v2 model...')
 model_path = hf_hub_download(
-    'onnx-community/embeddinggemma-300m-ONNX',
-    subfolder='onnx',
-    filename='model_q4.onnx',
+    'Qdrant/all-MiniLM-L6-v2-onnx',
+    filename='model.onnx',
     cache_dir=cache,
 )
-hf_hub_download(
-    'onnx-community/embeddinggemma-300m-ONNX',
-    subfolder='onnx',
-    filename='model_q4.onnx_data',
-    cache_dir=cache,
-)
-hf_hub_download(
-    'onnx-community/embeddinggemma-300m-ONNX',
+tokenizer_path = hf_hub_download(
+    'Qdrant/all-MiniLM-L6-v2-onnx',
     filename='tokenizer.json',
     cache_dir=cache,
 )
 
-# Load model with external data
-print('Loading model with external data...')
-model = onnx.load(model_path, load_external_data=True)
-
-# Convert tensors to inline format
-print('Converting tensors to inline format...')
-for tensor in model.graph.initializer:
-    if tensor.data_location == onnx.TensorProto.EXTERNAL:
-        tensor.data_location = onnx.TensorProto.DEFAULT
-        tensor.ClearField('external_data')
-
-# Save model with inlined weights
-print('Saving model with inlined weights...')
-inlined_path = Path(model_path).parent / 'model_inlined.onnx'
-onnx.save(model, str(inlined_path))
-
-# Replace original with inlined version
-Path(model_path).unlink()
-Path(str(model_path) + '_data').unlink()
-inlined_path.rename(model_path)
-
+print(f'Model downloaded to: {model_path}')
+print(f'Tokenizer downloaded to: {tokenizer_path}')
 print('Done')
