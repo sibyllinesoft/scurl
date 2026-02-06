@@ -5,8 +5,6 @@ from dataclasses import dataclass
 from typing import Dict, List, Set, Tuple
 import json
 
-import numpy as np
-
 from ..middleware import ResponseMiddleware, ResponseContext, ResponseMiddlewareResult
 from .normalizer import TextNormalizer
 from .patterns import PatternExtractor, PATTERN_CATEGORIES
@@ -209,6 +207,8 @@ class PromptInjectionDefender(ResponseMiddleware):
         Returns:
             InjectionAnalysis with detection results.
         """
+        import numpy as np  # Lazy import - optional dependency
+
         # Normalize text to defeat obfuscation
         normalized = self._normalizer.normalize(text)
 
