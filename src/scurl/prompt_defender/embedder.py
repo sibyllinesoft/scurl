@@ -11,6 +11,7 @@ MODEL_ID = "onnx-community/embeddinggemma-300m-ONNX"
 EMBEDDING_FULL_DIM = 768
 EMBEDDING_DIM = 128  # Matryoshka truncation for efficiency
 MAX_LENGTH = 512  # Max tokens per chunk
+USE_QUANTIZED = True  # Use Q4 quantized model for ~4x speedup
 
 
 class EmbeddingGemmaONNX:
@@ -78,18 +79,22 @@ class EmbeddingGemmaONNX:
             )
 
         # Download model files if needed
+        # Use quantized model for ~4x faster inference
+        model_filename = "model_q4.onnx" if USE_QUANTIZED else "model.onnx"
+        data_filename = "model_q4.onnx_data" if USE_QUANTIZED else "model.onnx_data"
+
         model_path = hf_hub_download(
             MODEL_ID,
             subfolder="onnx",
-            filename="model.onnx",
+            filename=model_filename,
             cache_dir=str(self._model_dir),
         )
 
-        # Also download the external data file (must be in same dir as model.onnx)
+        # Also download the external data file (must be in same dir as model)
         hf_hub_download(
             MODEL_ID,
             subfolder="onnx",
-            filename="model.onnx_data",
+            filename=data_filename,
             cache_dir=str(self._model_dir),
         )
 

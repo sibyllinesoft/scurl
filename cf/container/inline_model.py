@@ -7,18 +7,18 @@ from pathlib import Path
 
 cache = '/root/.cache/scurl/models'
 
-# Download model files
-print('Downloading model files...')
+# Download Q4 quantized model (188MB vs 1.2GB full model)
+print('Downloading Q4 quantized model files...')
 model_path = hf_hub_download(
     'onnx-community/embeddinggemma-300m-ONNX',
     subfolder='onnx',
-    filename='model.onnx',
+    filename='model_q4.onnx',
     cache_dir=cache,
 )
 hf_hub_download(
     'onnx-community/embeddinggemma-300m-ONNX',
     subfolder='onnx',
-    filename='model.onnx_data',
+    filename='model_q4.onnx_data',
     cache_dir=cache,
 )
 hf_hub_download(

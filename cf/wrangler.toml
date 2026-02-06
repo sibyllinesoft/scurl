@@ -5,8 +5,8 @@ compatibility_date = "2024-01-01"
 [[containers]]
 class_name = "ScurlContainer"
 image = "./container/Dockerfile"
-max_instances = 1
-instance_type = "standard-1"  # 1 vCPU, 2GB RAM (lite only has 256MB)
+max_instances = 2
+instance_type = "standard-2"  # 2 vCPU, 4GB RAM
 
 [[durable_objects.bindings]]
 name = "SCURL_CONTAINER"
