@@ -11,7 +11,6 @@ from .middleware import (
 )
 from .request_middleware import SecretDefender
 from .response_middleware import ReadabilityExtractor
-from .prompt_defender import PromptInjectionDefender
 from .curl import parse_curl_args, execute_curl, curl_result_to_response_context
 
 
@@ -22,7 +21,7 @@ REQUEST_MIDDLEWARE = {
 
 RESPONSE_MIDDLEWARE = {
     "readability": ("ReadabilityExtractor", "Extracts clean markdown from HTML", ReadabilityExtractor),
-    "prompt-defender": ("PromptInjectionDefender", "Detects prompt injection in web content", PromptInjectionDefender),
+    "prompt-defender": ("PromptInjectionDefender", "Detects prompt injection in web content", None),  # Lazy loaded
 }
 
 
@@ -221,6 +220,7 @@ def run(args: Optional[list[str]] = None) -> int:
             response_chain.add(ReadabilityExtractor(use_readability=flags.readability))
         # Prompt defender is opt-in (requires --enable)
         if "prompt-defender" in flags.enable:
+            from .prompt_defender import PromptInjectionDefender
             response_chain.add(PromptInjectionDefender(
                 threshold=flags.injection_threshold,
                 action=flags.injection_action,
