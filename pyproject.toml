@@ -35,6 +35,7 @@ browser = [
 ]
 # Prompt injection detection with ML-based classification
 prompt-defender = [
+    "numpy>=1.24.0",
     "onnxruntime>=1.17.0",
     "tokenizers>=0.15.0",
     "huggingface-hub>=0.20.0",
@@ -44,6 +45,7 @@ prompt-defender = [
 ]
 # Training the classifier (includes prompt-defender deps)
 training = [
+    "numpy>=1.24.0",
     "onnxruntime>=1.17.0",
     "tokenizers>=0.15.0",
     "huggingface-hub>=0.20.0",
