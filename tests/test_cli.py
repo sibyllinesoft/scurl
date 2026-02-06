@@ -1,7 +1,6 @@
 """Tests for CLI entry point."""
 
-import pytest
-from scurl.cli import extract_scurl_flags, run, ScurlFlags
+from scurl.cli import extract_scurl_flags, run
 
 
 class TestExtractScurlFlags:

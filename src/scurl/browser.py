@@ -1,6 +1,5 @@
 """Playwright-based browser fetcher for JS-rendered pages."""
 
-import sys
 from .curl import CurlResult
 from .middleware import RequestContext
 

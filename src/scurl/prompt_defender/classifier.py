@@ -1,10 +1,15 @@
 """Classifier for prompt injection detection."""
 
+from __future__ import annotations
+
 import pickle
 from pathlib import Path
-from typing import Optional, Union
+from typing import TYPE_CHECKING, Optional
 
 import numpy as np
+
+if TYPE_CHECKING:
+    from .patterns import PatternFeatures
 
 
 class InjectionClassifier:
@@ -154,7 +159,6 @@ class PatternOnlyClassifier:
         Returns:
             Weighted score (higher = more likely injection).
         """
-        from .patterns import PatternFeatures
 
         score = 0.0
         score += pattern_features.instruction_override * self.WEIGHTS['instruction_override']

@@ -1,6 +1,5 @@
 """Tests for prompt injection defender."""
 
-import pytest
 from scurl.prompt_defender.normalizer import TextNormalizer
 from scurl.prompt_defender.patterns import PatternExtractor, PatternFeatures
 

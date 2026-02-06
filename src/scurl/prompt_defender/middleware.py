@@ -1,19 +1,18 @@
 """Prompt injection detection middleware for scurl."""
 
 import re
-import secrets
-from dataclasses import dataclass, field
-from typing import Dict, List, Optional, Set, Tuple
+from dataclasses import dataclass
+from typing import Dict, List, Set, Tuple
 import json
 
 import numpy as np
 
 from ..middleware import ResponseMiddleware, ResponseContext, ResponseMiddlewareResult
 from .normalizer import TextNormalizer
-from .patterns import PatternExtractor, PatternFeatures, PATTERN_CATEGORIES
+from .patterns import PatternExtractor, PATTERN_CATEGORIES
 from .classifier import InjectionClassifier, PatternOnlyClassifier
-from .motifs import MotifMatcher, MotifFeatureExtractor, HAS_RAPIDFUZZ
-from .windowing import SlidingWindowAnalyzer, AdaptiveWindowAnalyzer
+from .motifs import MotifMatcher, MotifFeatureExtractor
+from .windowing import AdaptiveWindowAnalyzer
 
 
 # Unicode block character for redaction
@@ -162,7 +161,7 @@ class PromptInjectionDefender(ResponseMiddleware):
             self._embedder = EmbeddingGemmaONNX()
             self._classifier = InjectionClassifier()
             return True
-        except (ImportError, RuntimeError) as e:
+        except (ImportError, RuntimeError):
             # Missing dependencies or model - fall back to pattern-only
             self._load_failed = True
             return False

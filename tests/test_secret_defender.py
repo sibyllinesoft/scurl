@@ -1,8 +1,7 @@
 """Tests for SecretDefender middleware."""
 
-import pytest
 from scurl.middleware import RequestAction, RequestContext
-from scurl.request_middleware import SecretDefender, SECRET_PATTERNS
+from scurl.request_middleware import SecretDefender
 
 
 def make_context(

@@ -1,6 +1,5 @@
 """Tests for curl wrapper."""
 
-import pytest
 from scurl.curl import parse_curl_args
 
 

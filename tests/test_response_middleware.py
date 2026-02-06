@@ -1,6 +1,5 @@
 """Tests for response middleware implementations."""
 
-import pytest
 from scurl.middleware import ResponseContext
 from scurl.response_middleware import ReadabilityExtractor, JsonPrettifier
 

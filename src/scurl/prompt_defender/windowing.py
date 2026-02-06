@@ -9,8 +9,7 @@ for efficient embedding generation.
 """
 
 from dataclasses import dataclass, field
-from typing import List, Tuple, Optional, Callable
-import numpy as np
+from typing import List, Tuple
 
 from .motifs import MotifMatcher, MotifSignal
 

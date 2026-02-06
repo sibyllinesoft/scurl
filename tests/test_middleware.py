@@ -1,6 +1,5 @@
 """Tests for middleware base classes."""
 
-import pytest
 from scurl.middleware import (
     RequestAction,
     RequestContext,

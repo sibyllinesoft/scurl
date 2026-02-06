@@ -11,11 +11,10 @@ used as direct detection rules.
 
 from dataclasses import dataclass
 from typing import Dict, List, Tuple, Optional, Set
-import re
 
 # Try to import rapidfuzz for fuzzy matching
 try:
-    from rapidfuzz import fuzz, process
+    from rapidfuzz import fuzz
     HAS_RAPIDFUZZ = True
 except ImportError:
     HAS_RAPIDFUZZ = False

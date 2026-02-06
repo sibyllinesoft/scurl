@@ -1,6 +1,5 @@
 """Tests for sliding window analysis with hotspot detection."""
 
-import pytest
 from scurl.prompt_defender.windowing import (
     SlidingWindowAnalyzer,
     AdaptiveWindowAnalyzer,
@@ -246,8 +245,5 @@ class TestHotspotMerging:
 
         # If detected separately, should have distinct batches
         if len(result.hotspots) >= 2:
-            # Batches should be separate due to large gap
-            total_batch_span = sum(end - start for start, end in result.batched_regions)
-            total_hotspot_span = sum(h.length for h in result.hotspots)
             # Batches shouldn't merge if gap is large
             assert len(result.batched_regions) >= 1

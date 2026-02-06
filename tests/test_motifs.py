@@ -5,7 +5,6 @@ from scurl.prompt_defender.motifs import (
     MotifMatcher,
     MotifFeatureExtractor,
     MotifSignal,
-    MotifMatch,
     MOTIF_LIBRARY,
     HAS_RAPIDFUZZ,
 )
