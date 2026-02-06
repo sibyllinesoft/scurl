@@ -42,6 +42,7 @@ class ScurlFlags:
     """Parsed scurl-specific flags."""
     raw: bool = False
     render: bool = False
+    readability: bool = False
     disable: set[str] = field(default_factory=set)
     enable: set[str] = field(default_factory=set)
     list_middleware: bool = False
@@ -64,6 +65,9 @@ def extract_scurl_flags(args: list[str]) -> tuple[ScurlFlags, list[str]]:
             i += 1
         elif arg == "--render":
             flags.render = True
+            i += 1
+        elif arg == "--readability":
+            flags.readability = True
             i += 1
         elif arg == "--disable":
             if i + 1 < len(args):
@@ -119,6 +123,7 @@ def print_help() -> None:
     print("scurl-specific options:")
     print("  --raw                  Disable all response middleware (raw curl output)")
     print("  --render               Use headless browser for JS-rendered pages")
+    print("  --readability          Extract article content (strips nav, ads, etc.)")
     print("  --disable <middleware>  Disable a middleware by slug (can be repeated)")
     print("  --enable <middleware>  Enable an opt-in middleware (can be repeated)")
     print("  --list-middleware      List available middleware and their slugs")
@@ -213,7 +218,7 @@ def run(args: Optional[list[str]] = None) -> int:
     response_chain = ResponseMiddlewareChain()
     if not flags.raw:
         if "readability" not in flags.disable:
-            response_chain.add(ReadabilityExtractor())
+            response_chain.add(ReadabilityExtractor(use_readability=flags.readability))
         # Prompt defender is opt-in (requires --enable)
         if "prompt-defender" in flags.enable:
             response_chain.add(PromptInjectionDefender(

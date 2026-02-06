@@ -20,11 +20,13 @@ class ReadabilityExtractor(ResponseMiddleware):
         include_images: bool = True,
         include_tables: bool = True,
         body_width: int = 0,
+        use_readability: bool = False,
     ):
         self._include_links = include_links
         self._include_images = include_images
         self._include_tables = include_tables
         self._body_width = body_width
+        self._use_readability = use_readability
 
     @property
     def name(self) -> str:
@@ -105,16 +107,18 @@ class ReadabilityExtractor(ResponseMiddleware):
     def process(self, context: ResponseContext) -> ResponseMiddlewareResult:
         """Extract markdown from HTML.
 
-        Tries readability + html2text first, falls back to html2text direct
-        for content readability can't handle.
+        By default uses html2text directly for full page content.
+        With use_readability=True, tries readability article extraction first.
         """
         html = context.body.decode("utf-8", errors="replace")
         url = context.url or ""
 
-        # Try readability + html2text first (best for article-like content)
-        result = self._extract_with_readability(html, url)
+        result = None
+        if self._use_readability:
+            # Try readability + html2text (best for article-like content)
+            result = self._extract_with_readability(html, url)
 
-        # Fall back to html2text direct (preserves links, may include boilerplate)
+        # Use html2text direct (full page, preserves all content)
         if not result:
             result = self._extract_with_html2text_direct(html)
 

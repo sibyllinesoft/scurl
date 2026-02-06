@@ -33,7 +33,7 @@ scurl -H "Accept: application/json" https://api.example.com/data
 ## Features
 
 - **SecretDefender**: Automatically detects and blocks requests containing exposed secrets/tokens
-- **ReadabilityExtractor**: Extracts clean markdown from HTML responses using readability + html2text
+- **HTML to Markdown**: Converts HTML responses to clean markdown (use `--readability` for article extraction)
 - **Middleware System**: Composable request and response middleware
 
 ## Why scurl?
@@ -81,7 +81,9 @@ was added later...
 
 | Flag | Description |
 |------|-------------|
-| `--raw` | Disable all response middleware |
+| `--raw` | Disable all response middleware (raw HTML output) |
+| `--readability` | Extract article content only (strips nav, ads, sidebars) |
+| `--render` | Use headless browser for JS-rendered pages |
 | `--disable <slug>` | Disable a middleware by slug (can be repeated) |
 | `--enable <slug>` | Override a middleware's block (can be repeated) |
 | `--list-middleware` | List available middleware and their slugs |
