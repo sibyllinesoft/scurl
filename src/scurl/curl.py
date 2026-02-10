@@ -90,7 +90,7 @@ def parse_curl_args(args: list[str]) -> RequestContext:
 def execute_curl(context: RequestContext) -> CurlResult:
     """Execute curl with the given context and return the result."""
     # Build curl command with response header output
-    cmd = ["curl", "-s", "-i", "-w", "\n%{http_code}\n%{url_effective}"]
+    cmd = ["curl", "-sL", "-i", "-w", "\n%{http_code}\n%{url_effective}"]
     cmd.extend(context.curl_args)
 
     try:
@@ -133,21 +133,39 @@ def execute_curl(context: RequestContext) -> CurlResult:
     final_url = context.url
 
     # Find the header/body separator (double CRLF or double LF)
+    # With -L (follow redirects), curl outputs multiple header blocks.
+    # We need to find the LAST header block (final response), not the first.
     header_end = -1
-    for sep in (b"\r\n\r\n", b"\n\n"):
-        idx = output.find(sep)
-        if idx != -1:
-            if header_end == -1 or idx < header_end:
-                header_end = idx
-                body = output[idx + len(sep):]
-                header_section = output[:idx].decode("utf-8", errors="replace")
-                break
+    header_section = ""
 
-    if header_end == -1:
-        # No headers found, treat all as body
-        body = output
-    else:
-        # Parse headers
+    # Keep finding header blocks until we find the actual body
+    remaining = output
+    while True:
+        found_sep = False
+        for sep in (b"\r\n\r\n", b"\n\n"):
+            idx = remaining.find(sep)
+            if idx != -1:
+                potential_headers = remaining[:idx].decode("utf-8", errors="replace")
+                potential_body = remaining[idx + len(sep):]
+
+                # Check if this looks like a header block (starts with HTTP/)
+                if potential_headers.strip().startswith("HTTP/"):
+                    header_section = potential_headers
+                    remaining = potential_body
+                    found_sep = True
+                    break
+                else:
+                    # Not a header block, this is the body
+                    body = remaining
+                    found_sep = False
+                    break
+
+        if not found_sep:
+            body = remaining
+            break
+
+    # Parse headers from the final response
+    if header_section:
         for line in header_section.split("\n"):
             line = line.strip()
             if line.startswith("HTTP/"):

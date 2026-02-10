@@ -1,6 +1,6 @@
 [project]
 name = "sibylline-scurl"
-version = "0.2.3"
+version = "0.3.0"
 description = "A secure curl wrapper with middleware support and HTML-to-markdown extraction"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -42,6 +42,7 @@ prompt-defender = [
     "confusable-homoglyphs>=3.2.0",
     "scikit-learn>=1.3.0",
     "rapidfuzz>=3.5.0",
+    "pyyaml>=6.0",
 ]
 # Training the classifier (includes prompt-defender deps)
 training = [
@@ -63,6 +64,17 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/scurl"]
+
+[tool.hatch.build.targets.wheel.sources]
+"src" = ""
+
+[tool.hatch.build]
+include = [
+    "src/scurl/**/*.py",
+    "src/scurl/**/*.yaml",
+    "src/scurl/**/*.onnx",
+    "src/scurl/**/*.json",
+]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

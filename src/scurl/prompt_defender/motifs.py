@@ -10,7 +10,7 @@ used as direct detection rules.
 """
 
 from dataclasses import dataclass
-from typing import Dict, List, Tuple, Optional, Set
+from typing import Dict, List, Tuple, Optional, Set, Union
 
 # Try to import rapidfuzz for fuzzy matching
 try:
@@ -134,15 +134,30 @@ class MotifMatcher:
         self,
         threshold: int = 75,
         motif_library: Optional[Dict[str, List[str]]] = None,
+        languages: Optional[List[str]] = None,
     ):
         """Initialize matcher.
 
         Args:
             threshold: Minimum fuzzy match score (0-100). Lower = more matches.
             motif_library: Custom motif dictionary, or use defaults.
+            languages: List of language codes to load motifs for.
+                      Use ["all"] for all available languages.
+                      Defaults to None (uses hardcoded English motifs).
+                      Ignored if motif_library is provided.
         """
         self.threshold = threshold
-        self.motifs = motif_library or MOTIF_LIBRARY
+
+        if motif_library is not None:
+            self.motifs = motif_library
+        elif languages is not None:
+            # Use config-based motifs
+            from .config import PatternConfig
+            config = PatternConfig(languages)
+            self.motifs = config.get_motifs()
+        else:
+            # Backward compatible: use hardcoded English motifs
+            self.motifs = MOTIF_LIBRARY
 
         # Build flat list for efficient matching
         self._flat_motifs: List[Tuple[str, str]] = []  # (motif, category)
@@ -319,8 +334,14 @@ class MotifFeatureExtractor:
         'motif_category_count',
     ]
 
-    def __init__(self, threshold: int = 75):
-        self.matcher = MotifMatcher(threshold=threshold)
+    def __init__(self, threshold: int = 75, languages: Optional[List[str]] = None):
+        """Initialize extractor.
+
+        Args:
+            threshold: Minimum fuzzy match score (0-100).
+            languages: List of language codes to load motifs for.
+        """
+        self.matcher = MotifMatcher(threshold=threshold, languages=languages)
 
     def extract(self, text: str) -> List[float]:
         """Extract motif features from text.

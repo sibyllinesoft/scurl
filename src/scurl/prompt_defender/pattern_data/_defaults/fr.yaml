@@ -1,0 +1,134 @@
+language: fr
+name: French
+version: "1.0"
+
+patterns:
+  instruction_override:
+    - 'ignore[zs]?\s+(toutes?\s+)?(les\s+)?(instructions?|r[eè]gles?|directives?)\s+(pr[eé]c[eé]dentes?|ant[eé]rieures?)'
+    - 'oublie[zs]?\s+(tout\s+)?ce\s+qui\s+pr[eé]c[eè]de'
+    - 'oublie[zs]?\s+(les\s+)?(instructions?|r[eè]gles?)\s+(pr[eé]c[eé]dentes?|ant[eé]rieures?)'
+    - 'ne\s+(suivez?|respectez?)\s+(pas\s+)?(les\s+)?(instructions?|r[eè]gles?)\s+(pr[eé]c[eé]dentes?|ant[eé]rieures?)'
+    - 'annule[zs]?\s+(les\s+)?(instructions?|r[eè]gles?)\s+(pr[eé]c[eé]dentes?|ant[eé]rieures?)'
+    - 'nouvelles?\s+instructions?\s*[:=]'
+    - 'vraies?\s+instructions?\s*[:=]'
+    - 'instructions?\s+(r[eé]elles?|actuelles?)\s*[:=]'
+
+  role_injection:
+    - 'tu\s+es\s+maintenant\s+'
+    - '(vous\s+[eê]tes|tu\s+es)\s+d[eé]sormais\s+'
+    - '[aà]\s+partir\s+de\s+maintenant\s*(,|:)?\s*(tu|vous)'
+    - 'agis\s+comme\s+(si\s+tu\s+[eé]tais\s+)?'
+    - '(fais|faites)\s+semblant\s+(d''[eê]tre|que\s+(tu\s+es|vous\s+[eê]tes))'
+    - '(ton|votre)\s+nouveau\s+(r[oô]le|objectif|but)'
+    - 'imagine[zs]?\s+que\s+(tu\s+es|vous\s+[eê]tes)'
+    - 'joue[zs]?\s+le\s+r[oô]le\s+(de|d'')'
+    - 'passe[zs]?\s+en\s+mode\s+'
+    - 'comporte[zs]?-?(toi|vous)\s+comme\s+'
+    - 'adopte[zs]?\s+le\s+(r[oô]le|l''identit[eé]|le\s+personnage)\s+(de|d'')'
+    - 'pour\s+le\s+reste\s+de\s+(cette\s+)?(conversation|session|chat)'
+
+  system_manipulation:
+    - 'mode\s+(admin|administrateur|d[eé]veloppeur|dieu|root|debug|maintenance)'
+    - '(annule|remplace)\s+(le\s+)?syst[eè]me'
+    - 'd[eé]verrouille[zs]?\s+(toutes?\s+)?(les\s+)?(restrictions?|capacit[eé]s?|fonctions?)'
+    - 'd[eé]sactive[zs]?\s+(les\s+)?(filtres?|s[eé]curit[eé]|restrictions?)'
+    - 'contourne[zs]?\s+(les\s+)?(filtres?|restrictions?|limites?)'
+    - 'active[zs]?\s+(le\s+)?mode\s+(sans\s+restrictions?|illimit[eé]|complet)'
+    - 'supprime[zs]?\s+(les\s+)?(limitations?|restrictions?|filtres?)'
+    - 'sans\s+(aucune\s+)?(restriction|limitation|filtre)'
+    - 'd[eé]sactive[zs]?\s+(les\s+)?(filtres?|contr[oô]les?)\s*(de\s+s[eé]curit[eé])?'
+    - 'ignore[zs]?\s+(les\s+)?(politiques?|r[eè]gles?)\s+de\s+(s[eé]curit[eé]|contenu)'
+
+  prompt_leak:
+    - 'r[eé]v[eè]le[zs]?\s+(ton|votre)\s+(prompt|instructions?|directives?)\s*(syst[eè]me)?'
+    - 'montre[zs]?-?(moi)?\s+(ton|votre)\s+(prompt|instructions?|r[eè]gles?)\s*(syst[eè]me)?'
+    - 'quelles?\s+sont\s+(tes|vos)\s+(instructions?|r[eè]gles?|directives?)'
+    - '(affiche|imprime|[eé]cris|r[eé]p[eè]te)[zs]?\s+(ton|votre)\s+(prompt|instructions?)'
+    - 'dis-?(moi)?\s+(tes|vos)\s+(instructions?|r[eè]gles?)\s*(syst[eè]me)?'
+    - '(prompt|instructions?)\s+(initiales?|originales?|cach[eé]es?|secr[eè]tes?)'
+    - 'qu''est-ce\s+qu''on\s+t''a\s+(dit|indiqu[eé]|programm[eé])'
+    - '(copie|colle|cite)[zs]?\s+(ton|votre)\s+(prompt|instructions?)'
+
+  jailbreak_keywords:
+    - '\bDAN\b'
+    - '\bjailbreak\b'
+    - 'fais\s+n''importe\s+quoi\s+maintenant'
+    - 'mode\s+(mal[eé]fique|sombre|sans\s+filtres?|sans\s+restrictions?)'
+    - '(sans|ignore[zs]?)\s+(les\s+)?(directives?|restrictions?)\s+[eé]thiques?'
+    - 'hypoth[eé]tiquement\s+(parlant)?'
+    - '[aà]\s+des\s+fins\s+([eé]ducatives?|acad[eé]miques?|de\s+recherche)'
+    - 'dans\s+un\s+(sc[eé]nario|monde|contexte)\s+fictif'
+    - 'mode\s+chaos'
+    - 'sans\s+censure'
+    - '([eé]vite[zs]?|contourne[zs]?)\s+(toutes?\s+)?(les\s+)?sauvegardes?'
+
+  encoding_markers:
+    - 'base64\s*[:=]'
+    - 'd[eé]code[zs]?\s+(ceci|ce\s+qui\s+suit)'
+    - '(message|instruction|prompt)\s+encod[eé]'
+    - 'rot13'
+
+  suspicious_delimiters:
+    - '\[\s*syst[eè]me\s*\]'
+    - '\[\s*instruction[s]?\s*\]'
+    - '\[\s*admin\s*\]'
+    - '\[\s*assistant\s*\]'
+    - '\[\s*utilisateur\s*\]'
+
+motifs:
+  instruction_override:
+    - 'ignore les instructions'
+    - 'ignore tout ce qui precede'
+    - 'oublie les instructions'
+    - 'oublie tout'
+    - 'nouvelles instructions'
+    - 'vraies instructions'
+    - 'annule les regles'
+    - 'ne suis pas les regles'
+
+  role_injection:
+    - 'tu es maintenant'
+    - 'a partir de maintenant'
+    - 'agis comme'
+    - 'fais semblant'
+    - 'ton nouveau role'
+    - 'imagine que tu es'
+    - 'comporte toi comme'
+    - 'adopte le role'
+
+  system_manipulation:
+    - 'mode admin'
+    - 'mode developpeur'
+    - 'mode dieu'
+    - 'deverrouille restrictions'
+    - 'desactive securite'
+    - 'contourne filtres'
+    - 'sans restrictions'
+    - 'supprime limitations'
+
+  prompt_leak:
+    - 'revele ton prompt'
+    - 'montre moi tes instructions'
+    - 'quelles sont tes regles'
+    - 'dis moi tes instructions'
+    - 'instructions initiales'
+    - 'prompt secret'
+    - 'qu est ce qu on t a dit'
+
+  jailbreak:
+    - 'fais n importe quoi'
+    - 'jailbreak'
+    - 'mode malefique'
+    - 'sans restrictions'
+    - 'sans filtres'
+    - 'sans ethique'
+    - 'fins educatives'
+    - 'scenario fictif'
+    - 'mode chaos'
+    - 'sans censure'
+
+  delimiters:
+    - '[systeme]'
+    - '[instruction]'
+    - '[admin]'
+    - '[assistant]'

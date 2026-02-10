@@ -2219,7 +2219,7 @@ wheels = [
 
 [[package]]
 name = "sibylline-scurl"
-version = "0.2.0"
+version = "0.2.3"
 source = { editable = "." }
 dependencies = [
     { name = "html2text" },
@@ -2237,7 +2237,10 @@ dev = [
 prompt-defender = [
     { name = "confusable-homoglyphs" },
     { name = "huggingface-hub" },
+    { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
+    { name = "numpy", version = "2.4.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
     { name = "onnxruntime" },
+    { name = "pyyaml" },
     { name = "rapidfuzz" },
     { name = "scikit-learn", version = "1.7.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
     { name = "scikit-learn", version = "1.8.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
@@ -2247,6 +2250,8 @@ training = [
     { name = "confusable-homoglyphs" },
     { name = "datasets" },
     { name = "huggingface-hub" },
+    { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
+    { name = "numpy", version = "2.4.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
     { name = "onnxruntime" },
     { name = "scikit-learn", version = "1.7.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
     { name = "scikit-learn", version = "1.8.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
@@ -2261,11 +2266,14 @@ requires-dist = [
     { name = "html2text", specifier = ">=2024.2.26" },
     { name = "huggingface-hub", marker = "extra == 'prompt-defender'", specifier = ">=0.20.0" },
     { name = "huggingface-hub", marker = "extra == 'training'", specifier = ">=0.20.0" },
+    { name = "numpy", marker = "extra == 'prompt-defender'", specifier = ">=1.24.0" },
+    { name = "numpy", marker = "extra == 'training'", specifier = ">=1.24.0" },
     { name = "onnxruntime", marker = "extra == 'prompt-defender'", specifier = ">=1.17.0" },
     { name = "onnxruntime", marker = "extra == 'training'", specifier = ">=1.17.0" },
     { name = "playwright", marker = "extra == 'browser'", specifier = ">=1.40.0" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=7.0.0" },
     { name = "pytest-cov", marker = "extra == 'dev'", specifier = ">=4.0.0" },
+    { name = "pyyaml", marker = "extra == 'prompt-defender'", specifier = ">=6.0" },
     { name = "rapidfuzz", marker = "extra == 'prompt-defender'", specifier = ">=3.5.0" },
     { name = "readability-lxml", specifier = ">=0.8.1" },
     { name = "scikit-learn", marker = "extra == 'prompt-defender'", specifier = ">=1.3.0" },

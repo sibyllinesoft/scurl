@@ -2,9 +2,10 @@
 
 import re
 from dataclasses import dataclass, fields
-from typing import Dict, List
+from typing import Dict, List, Optional
 
-# Pattern categories for detecting different types of prompt injection
+# Pattern categories for detecting different types of prompt injection (English defaults)
+# These are used when no config file is available or languages=None
 PATTERN_CATEGORIES: Dict[str, List[str]] = {
     'instruction_override': [
         r'ignore\s+(all\s+)?(previous|prior|above|earlier|preceding)\s+'
@@ -141,12 +142,26 @@ class PatternFeatures:
 class PatternExtractor:
     """Extract pattern-based features from normalized text."""
 
-    def __init__(self):
-        """Initialize with compiled regex patterns."""
-        self._compiled: Dict[str, List[re.Pattern]] = {
-            category: [re.compile(pattern, re.IGNORECASE) for pattern in patterns]
-            for category, patterns in PATTERN_CATEGORIES.items()
-        }
+    def __init__(self, languages: Optional[List[str]] = None):
+        """Initialize with compiled regex patterns.
+
+        Args:
+            languages: List of language codes to load patterns for.
+                      Use ["all"] for all available languages.
+                      Defaults to None (uses hardcoded English patterns for
+                      backward compatibility).
+        """
+        if languages is not None:
+            # Use config-based patterns
+            from .config import PatternConfig
+            config = PatternConfig(languages)
+            self._compiled = config.get_patterns()
+        else:
+            # Backward compatible: use hardcoded English patterns
+            self._compiled: Dict[str, List[re.Pattern]] = {
+                category: [re.compile(pattern, re.IGNORECASE) for pattern in patterns]
+                for category, patterns in PATTERN_CATEGORIES.items()
+            }
 
     def extract(self, normalized_text: str) -> PatternFeatures:
         """Extract all features from normalized text.

@@ -1,0 +1,134 @@
+language: es
+name: Spanish
+version: "1.0"
+
+patterns:
+  instruction_override:
+    - 'ignora\s+(todas?\s+)?(las\s+)?(instrucciones|reglas|directivas)\s+(anteriores|previas)'
+    - 'olvida\s+(todo\s+)?lo\s+anterior'
+    - 'olvida\s+las\s+(instrucciones|reglas)\s+(anteriores|previas)'
+    - 'no\s+sigas\s+(las\s+)?(instrucciones|reglas)\s+(anteriores|previas)'
+    - 'descarta\s+(las\s+)?(instrucciones|reglas)\s+(anteriores|previas)'
+    - 'nuevas\s+instrucciones\s*[:=]'
+    - 'instrucciones\s+reales\s*[:=]'
+    - 'instrucciones\s+actuales\s*[:=]'
+    - 'anula\s+(las\s+)?(instrucciones|reglas)\s+anteriores'
+
+  role_injection:
+    - 'ahora\s+eres\s+'
+    - 'a\s+partir\s+de\s+ahora\s*(,|:)?\s*(t[uú]|tu)'
+    - 'act[uú]a\s+como\s+(si\s+fueras\s+)?'
+    - 'finge\s+(ser|que\s+eres)'
+    - 'tu\s+nuevo\s+(rol|objetivo|prop[oó]sito)'
+    - 'imagina\s+que\s+eres'
+    - 'interpreta\s+(el\s+papel\s+de|a)'
+    - 'cambia\s+a\s+modo\s+'
+    - 'comp[oó]rtate\s+como\s+'
+    - 'asume\s+el\s+(rol|papel|identidad)\s+de'
+    - 'durante\s+el\s+resto\s+de\s+(esta\s+)?(conversaci[oó]n|sesi[oó]n|chat)'
+
+  system_manipulation:
+    - 'modo\s+(admin|administrador|desarrollador|dios|root|debug|mantenimiento)'
+    - '(anula|sobrescribe)\s+(el\s+)?sistema'
+    - 'desbloquea\s+(todas?\s+)?(las\s+)?(restricciones?|capacidades?|funciones?)'
+    - 'desactiva\s+(los\s+)?(filtros?|seguridad|restricciones?)\s*(de\s+seguridad)?'
+    - 'evita\s+(los\s+)?(filtros?|restricciones?|l[ií]mites?)'
+    - 'activa\s+(modo\s+)?(sin\s+restricciones|ilimitado|completo)'
+    - 'elimina\s+(las\s+)?(limitaciones?|restricciones?|filtros?)'
+    - 'sin\s+(ninguna\s+)?(restricci[oó]n|limitaci[oó]n|filtro)'
+    - 'apaga\s+(los\s+)?(filtros?|controles?)\s*(de\s+seguridad)?'
+    - 'ignora\s+(las\s+)?(pol[ií]ticas?|normas?)\s+de\s+(seguridad|contenido)'
+
+  prompt_leak:
+    - 'revela\s+(tu\s+)?(prompt|instrucciones?|directivas?)\s*(del\s+sistema)?'
+    - 'mu[eé]strame\s+(tu\s+)?(prompt|instrucciones?|reglas?)\s*(del\s+sistema)?'
+    - 'cu[aá]les?\s+son\s+(tus?|las)\s+(instrucciones?|reglas?|directivas?)'
+    - '(imprime|muestra|escribe|repite)\s+(tu\s+)?(prompt|instrucciones?)'
+    - 'dime\s+(tus?|las)\s+(instrucciones?|reglas?)\s*(del\s+sistema)?'
+    - '(prompt|instrucciones?)\s+(iniciales?|originales?|ocultas?|secretas?)'
+    - 'qu[eé]\s+te\s+(dijeron|indicaron|programaron)'
+    - '(copia|pega|cita)\s+(tu\s+)?(prompt|instrucciones?)'
+
+  jailbreak_keywords:
+    - '\bDAN\b'
+    - '\bjailbreak\b'
+    - 'haz\s+cualquier\s+cosa\s+ahora'
+    - 'modo\s+(malvado|oscuro|sin\s+filtros?|sin\s+restricciones)'
+    - '(sin|ignora)\s+(las\s+)?(directrices?|restricciones?)\s+[eé]ticas?'
+    - 'hipot[eé]ticamente\s+(hablando)?'
+    - 'con\s+fines\s+(educativos|acad[eé]micos|de\s+investigaci[oó]n)'
+    - 'en\s+un\s+(escenario|mundo|contexto)\s+ficticio'
+    - 'modo\s+caos'
+    - 'sin\s+censura'
+    - '(evita|salta)\s+(todas?\s+)?(las\s+)?salvaguardas?'
+
+  encoding_markers:
+    - 'base64\s*[:=]'
+    - 'decodifica\s+(esto|lo\s+siguiente)'
+    - '(mensaje|instrucci[oó]n|prompt)\s+codificad[oa]'
+    - 'rot13'
+
+  suspicious_delimiters:
+    - '\[\s*sistema\s*\]'
+    - '\[\s*instrucci[oó]n(es)?\s*\]'
+    - '\[\s*admin\s*\]'
+    - '\[\s*asistente\s*\]'
+    - '\[\s*usuario\s*\]'
+
+motifs:
+  instruction_override:
+    - 'ignora las instrucciones'
+    - 'ignora todo lo anterior'
+    - 'olvida las instrucciones'
+    - 'olvida todo'
+    - 'nuevas instrucciones'
+    - 'instrucciones reales'
+    - 'descarta lo anterior'
+    - 'no sigas las reglas'
+
+  role_injection:
+    - 'ahora eres'
+    - 'a partir de ahora'
+    - 'actua como'
+    - 'finge ser'
+    - 'tu nuevo rol'
+    - 'imagina que eres'
+    - 'comportate como'
+    - 'asume el papel'
+
+  system_manipulation:
+    - 'modo admin'
+    - 'modo desarrollador'
+    - 'modo dios'
+    - 'desbloquea restricciones'
+    - 'desactiva seguridad'
+    - 'evita filtros'
+    - 'sin restricciones'
+    - 'elimina limitaciones'
+
+  prompt_leak:
+    - 'revela tu prompt'
+    - 'muestrame tus instrucciones'
+    - 'cuales son tus reglas'
+    - 'dime tus instrucciones'
+    - 'instrucciones iniciales'
+    - 'prompt secreto'
+    - 'que te dijeron'
+
+  jailbreak:
+    - 'haz cualquier cosa'
+    - 'jailbreak'
+    - 'modo malvado'
+    - 'sin restricciones'
+    - 'sin filtros'
+    - 'sin etica'
+    - 'fines educativos'
+    - 'escenario ficticio'
+    - 'modo caos'
+    - 'sin censura'
+
+  delimiters:
+    - '[sistema]'
+    - '[instruccion]'
+    - '[admin]'
+    - '[asistente]'

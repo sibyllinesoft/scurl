@@ -2,7 +2,7 @@
 
 import re
 from dataclasses import dataclass
-from typing import Dict, List, Set, Tuple
+from typing import Dict, List, Optional, Set, Tuple
 import json
 
 from ..middleware import ResponseMiddleware, ResponseContext, ResponseMiddlewareResult
@@ -66,6 +66,7 @@ class PromptInjectionDefender(ResponseMiddleware):
         use_embeddings: bool = True,
         use_windowing: bool = True,
         lazy_load: bool = True,
+        languages: Optional[List[str]] = None,
     ):
         """Initialize the defender.
 
@@ -82,20 +83,24 @@ class PromptInjectionDefender(ResponseMiddleware):
             use_windowing: Whether to use sliding window analysis for long texts.
                           Provides more precise hotspot detection.
             lazy_load: Whether to lazy-load heavy components (embedder, classifier).
+            languages: List of language codes for pattern detection (e.g., ["en", "es"]).
+                      Use ["all"] for all available languages. Defaults to None
+                      (English-only patterns for backward compatibility).
         """
         self.threshold = threshold
         self.action = action if action in self.ACTIONS else "warn"
         self._use_embeddings = use_embeddings
         self._use_windowing = use_windowing
+        self._languages = languages
 
         # Always-available components
         self._normalizer = TextNormalizer()
-        self._pattern_extractor = PatternExtractor()
+        self._pattern_extractor = PatternExtractor(languages=languages)
         self._pattern_classifier = PatternOnlyClassifier(threshold=0.3)
 
         # Motif-based detection
-        self._motif_matcher = MotifMatcher(threshold=75)
-        self._motif_extractor = MotifFeatureExtractor(threshold=75)
+        self._motif_matcher = MotifMatcher(threshold=75, languages=languages)
+        self._motif_extractor = MotifFeatureExtractor(threshold=75, languages=languages)
 
         # Windowing analyzer for long texts
         self._window_analyzer = AdaptiveWindowAnalyzer(
@@ -122,12 +127,27 @@ class PromptInjectionDefender(ResponseMiddleware):
     def _compile_span_patterns(self) -> List[re.Pattern]:
         """Compile all patterns for span detection."""
         patterns = []
-        for category_patterns in PATTERN_CATEGORIES.values():
-            for pattern_str in category_patterns:
-                try:
-                    patterns.append(re.compile(pattern_str, re.IGNORECASE))
-                except re.error:
-                    pass  # Skip invalid patterns
+
+        if self._languages is not None:
+            # Use config-based patterns
+            from .config import PatternConfig
+            config = PatternConfig(self._languages)
+            raw_patterns = config.get_raw_patterns()
+            for category_patterns in raw_patterns.values():
+                for pattern_str in category_patterns:
+                    try:
+                        patterns.append(re.compile(pattern_str, re.IGNORECASE))
+                    except re.error:
+                        pass  # Skip invalid patterns
+        else:
+            # Backward compatible: use hardcoded English patterns
+            for category_patterns in PATTERN_CATEGORIES.values():
+                for pattern_str in category_patterns:
+                    try:
+                        patterns.append(re.compile(pattern_str, re.IGNORECASE))
+                    except re.error:
+                        pass  # Skip invalid patterns
+
         return patterns
 
     @property
@@ -401,6 +421,16 @@ class PromptInjectionDefender(ResponseMiddleware):
         ]
         return ','.join(active) if active else 'semantic'
 
+    def _wrap_untrusted(self, content: str) -> str:
+        """Wrap content in <untrusted> tags to signal external origin to LLMs.
+
+        All web content fetched by scurl is from external sources and should
+        be treated as potentially containing prompt injection attempts.
+        The <untrusted> wrapper provides a semantic signal to downstream LLMs
+        that this content should be treated as data, not instructions.
+        """
+        return f'<untrusted>\n{content}\n</untrusted>'
+
     def process(self, context: ResponseContext) -> ResponseMiddlewareResult:
         """Process response, detecting and flagging injections."""
         text = context.body.decode('utf-8', errors='replace')
@@ -408,13 +438,15 @@ class PromptInjectionDefender(ResponseMiddleware):
         # Analyze for injection
         analysis = self.analyze(text, include_matches=(self.action == "metadata"))
 
-        # If not flagged, pass through unchanged
+        # If not flagged, wrap in untrusted and pass through
         if not analysis.flagged:
-            return ResponseMiddlewareResult(body=context.body)
+            wrapped = self._wrap_untrusted(text)
+            return ResponseMiddlewareResult(body=wrapped.encode('utf-8'))
 
         # Handle based on action mode
         if self.action == "silent":
-            return ResponseMiddlewareResult(body=context.body)
+            wrapped = self._wrap_untrusted(text)
+            return ResponseMiddlewareResult(body=wrapped.encode('utf-8'))
 
         if self.action == "metadata":
             output = {
@@ -451,7 +483,7 @@ class PromptInjectionDefender(ResponseMiddleware):
         score_str = f"{analysis.score:.2f}"
         body = f'<suspected-prompt-injection p="{score_str}" t="{signal_types}">\n{processed_text}\n</suspected-prompt-injection>'
 
-        return ResponseMiddlewareResult(body=body.encode('utf-8'))
+        return ResponseMiddlewareResult(body=self._wrap_untrusted(body).encode('utf-8'))
 
     @property
     def mode(self) -> str:

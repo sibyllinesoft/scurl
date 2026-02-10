@@ -1,0 +1,139 @@
+language: de
+name: German
+version: "1.0"
+
+patterns:
+  instruction_override:
+    - 'ignoriere\s+(alle\s+)?(vorherigen?|fr[uü]heren?|obigen?)\s+(Anweisungen?|Regeln?|Richtlinien?|Befehle?)'
+    - 'vergiss\s+(alles\s+)?(Vorherige|Fr[uü]here|Obige)'
+    - 'vergiss\s+(die\s+)?(vorherigen?|fr[uü]heren?)\s+(Anweisungen?|Regeln?)'
+    - 'folge\s+(den\s+)?(vorherigen?|fr[uü]heren?)\s+(Anweisungen?|Regeln?)\s+nicht'
+    - 'beachte\s+(die\s+)?(vorherigen?|fr[uü]heren?)\s+(Anweisungen?|Regeln?)\s+nicht'
+    - '[uü]berschreibe\s+(alle\s+)?(vorherigen?|fr[uü]heren?)\s+(Anweisungen?|Regeln?)'
+    - 'neue\s+Anweisungen?\s*[:=]'
+    - 'echte\s+Anweisungen?\s*[:=]'
+    - 'aktuelle\s+Anweisungen?\s*[:=]'
+    - 'wirkliche\s+Anweisungen?\s*[:=]'
+
+  role_injection:
+    - 'du\s+bist\s+(jetzt|nun|ab\s+sofort)\s+'
+    - 'von\s+(jetzt|nun)\s+an\s*(,|:)?\s*(bist\s+)?du'
+    - 'ab\s+sofort\s+(bist\s+)?du'
+    - '(handle|agiere|verhalte\s+dich)\s+(so\s+)?als\s+(ob\s+du\s+|w[aä]rst\s+du\s+)?'
+    - '(tu|tue)\s+so\s+als\s+(ob\s+du\s+|w[aä]rst\s+du\s+)'
+    - 'stell\s+dir\s+vor\s+(,\s+)?du\s+(bist|w[aä]rst)'
+    - 'deine\s+neue\s+(Rolle|Aufgabe|Ziel|Anweisung)'
+    - 'spiele\s+(die\s+Rolle|den\s+Part)\s+(von|des|der)'
+    - 'wechsle\s+(in\s+den\s+|zum\s+).{0,30}\s*Modus'
+    - 'verhalte\s+dich\s+wie\s+(ein|eine)'
+    - 'nimm\s+(die\s+)?(Rolle|Identit[aä]t|Persona)\s+(von|des|der)\s+an'
+    - 'f[uü]r\s+den\s+Rest\s+(dieser\s+)?(Unterhaltung|Sitzung|Chat)'
+
+  system_manipulation:
+    - '(Admin|Administrator|Entwickler|Gott|Root|Debug|Wartungs)[- ]?Modus'
+    - 'System[- ]?([Uü]berschreibung|Befehl|Anweisung|Nachricht)'
+    - 'entsperre\s+(alle\s+)?(Einschr[aä]nkungen?|F[aä]higkeiten?|Funktionen?)'
+    - 'deaktiviere\s+(alle\s+)?(Sicherheits?)?[- ]?(Filter|Schutz|Einschr[aä]nkungen?|Limits?)'
+    - 'umgehe\s+(alle\s+)?(Einschr[aä]nkungen?|Filter|Sicherheit|Limits?)'
+    - 'aktiviere\s+(den\s+)?(uneingeschr[aä]nkten?|unbegrenzten?|vollen?)\s+(Modus|Zugang)'
+    - 'entferne\s+(alle\s+)?(Einschr[aä]nkungen?|Limitierungen?|Filter)'
+    - 'ohne\s+(jegliche\s+)?(Einschr[aä]nkungen?|Limitierungen?|Filter)'
+    - 'schalte\s+(die\s+)?(Sicherheits?)?[- ]?(Filter|Pr[uü]fungen?|Einschr[aä]nkungen?)\s+aus'
+    - 'ignoriere\s+(die\s+)?(Sicherheits?|Inhalts?)[- ]?(Richtlinien?|Regeln?|Filter)'
+
+  prompt_leak:
+    - '(zeige|enth[uü]lle|offenbare)\s+(mir\s+)?(deinen?|den)\s+(System[- ]?)?(Prompt|Anweisungen?|Richtlinien?)'
+    - '(was|welche)\s+(sind|ist)\s+(dein|deine)\s+(System[- ]?)?(Prompt|Anweisungen?|Regeln?)'
+    - '(drucke|gib\s+aus|schreibe|wiederhole)\s+(deinen?|den)\s+(System[- ]?)?(Prompt|Anweisungen?)'
+    - 'sag\s+mir\s+(deinen?|deine)\s+(System[- ]?)?(Prompt|Anweisungen?|Regeln?)'
+    - '(urspr[uü]ngliche|anfängliche|versteckte|geheime|initiale)\s+(Prompt|Anweisungen?|Richtlinien?)'
+    - 'was\s+(hat\s+man\s+dir|wurde\s+dir)\s+(gesagt|mitgeteilt|programmiert)'
+    - '(kopiere|zitiere)\s+(deinen?|den)\s+(System[- ]?)?(Prompt|Anweisungen?)'
+    - '(Anfang|Beginn)\s+(deines?|des)\s+(Prompts?|der\s+Anweisungen?)'
+
+  jailbreak_keywords:
+    - '\bDAN\b'
+    - '\bJailbreak\b'
+    - 'mach\s+jetzt\s+alles'
+    - 'tu\s+jetzt\s+alles'
+    - '(b[oö]ser?|dunkler?|ungefiltert|uneingeschr[aä]nkt)[- ]?(Modus|Assistent|KI|Version)'
+    - '(ohne|keine|ignoriere)\s+(ethische?|moralische?)\s+(Richtlinien?|Einschr[aä]nkungen?|Grenzen?)'
+    - 'hypothetisch\s+(gesprochen|betrachtet)?'
+    - '(zu|f[uü]r)\s+(Bildungs|Forschungs|akademischen?)[- ]?Zwecken?'
+    - 'in\s+einem\s+fiktiven\s+(Szenario|Welt|Kontext)'
+    - 'Chaos[- ]?Modus'
+    - 'maximale\s+Freiheit'
+    - 'keine\s+Zensur'
+    - 'unzensiert(er)?\s+(Modus|Antwort|Version)'
+    - '(umgehe|[uü]berspringe|vermeide)\s+(alle\s+)?Sicherheitsvorkehrungen?'
+
+  encoding_markers:
+    - 'Base64\s*[:=]'
+    - '(decodiere|dekodiere|entschl[uü]ssle)\s+(dies|das\s+Folgende)'
+    - '(codierte?|verschl[uü]sselte?)\s+(Nachricht|Anweisung|Prompt)'
+    - 'Rot13'
+
+  suspicious_delimiters:
+    - '\[\s*System\s*\]'
+    - '\[\s*Anweisung(en)?\s*\]'
+    - '\[\s*Admin\s*\]'
+    - '\[\s*Assistent\s*\]'
+    - '\[\s*(Benutzer|Nutzer)\s*\]'
+
+motifs:
+  instruction_override:
+    - 'ignoriere anweisungen'
+    - 'ignoriere alles vorherige'
+    - 'vergiss die anweisungen'
+    - 'vergiss alles'
+    - 'neue anweisungen'
+    - 'echte anweisungen'
+    - 'ueberschreibe regeln'
+    - 'folge nicht'
+
+  role_injection:
+    - 'du bist jetzt'
+    - 'ab sofort bist du'
+    - 'von jetzt an'
+    - 'handle als'
+    - 'tu so als'
+    - 'deine neue rolle'
+    - 'stell dir vor'
+    - 'verhalte dich wie'
+
+  system_manipulation:
+    - 'admin modus'
+    - 'entwickler modus'
+    - 'gott modus'
+    - 'entsperre einschraenkungen'
+    - 'deaktiviere sicherheit'
+    - 'umgehe filter'
+    - 'ohne einschraenkungen'
+    - 'entferne limitierungen'
+
+  prompt_leak:
+    - 'zeige deinen prompt'
+    - 'zeig mir deine anweisungen'
+    - 'was sind deine regeln'
+    - 'sag mir deine anweisungen'
+    - 'urspruengliche anweisungen'
+    - 'geheimer prompt'
+    - 'was hat man dir gesagt'
+
+  jailbreak:
+    - 'mach jetzt alles'
+    - 'jailbreak'
+    - 'boeser modus'
+    - 'ohne einschraenkungen'
+    - 'ohne filter'
+    - 'ohne ethik'
+    - 'bildungszwecke'
+    - 'fiktives szenario'
+    - 'chaos modus'
+    - 'keine zensur'
+
+  delimiters:
+    - '[system]'
+    - '[anweisung]'
+    - '[admin]'
+    - '[assistent]'

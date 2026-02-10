@@ -26,6 +26,7 @@ def _get_defender(threshold: float = 0.3, action: str = "redact"):
         _defender = PromptInjectionDefender(
             threshold=threshold,
             action=action,
+            languages=["all"],  # Enable multilingual detection
         )
     else:
         if _defender.threshold != threshold:
@@ -89,7 +90,8 @@ class ScurlHandler(BaseHTTPRequestHandler):
                     content_type="text/plain",
                     url=url,
                 )
-                if analysis.flagged and defender.should_process(ctx):
+                # Always process through defender to wrap in <untrusted> tags
+                if defender.should_process(ctx):
                     processed = defender.process(ctx)
                     output = processed.body.decode("utf-8", errors="replace")
                 else:
@@ -143,7 +145,8 @@ class ScurlHandler(BaseHTTPRequestHandler):
                 url="",
             )
 
-            if analysis.flagged and defender.should_process(ctx):
+            # Always process through defender to wrap in <untrusted> tags
+            if defender.should_process(ctx):
                 result = defender.process(ctx)
                 output = result.body.decode("utf-8", errors="replace")
             else:

@@ -1,0 +1,129 @@
+language: it
+name: Italian
+version: "1.0"
+
+patterns:
+  instruction_override:
+    - 'ignora\s+(tutte\s+)?(le\s+)?(istruzioni|regole|direttive)\s+(precedenti|anteriori)'
+    - 'dimentica\s+(tutto\s+)?(quello\s+che\s+)?(precede|viene\s+prima)'
+    - 'dimentica\s+(le\s+)?(istruzioni|regole)\s+(precedenti|anteriori)'
+    - 'non\s+seguire\s+(le\s+)?(istruzioni|regole)\s+(precedenti|anteriori)'
+    - 'annulla\s+(tutte\s+)?(le\s+)?(istruzioni|regole)\s+(precedenti|anteriori)'
+    - 'nuove\s+istruzioni[:：=]?'
+    - 'istruzioni\s+reali[:：=]?'
+    - 'istruzioni\s+vere[:：=]?'
+
+  role_injection:
+    - '(ora|adesso)\s+(tu\s+)?sei'
+    - 'da\s+(ora|adesso)\s+in\s+poi\s*(,|:)?\s*(tu|il\s+tuo)'
+    - 'd\'ora\s+in\s+poi'
+    - '(agisci|comportati)\s+come\s+(se\s+(tu\s+)?fossi\s+)?'
+    - '(fingi|fai\s+finta)\s+(di\s+essere|che\s+(tu\s+)?sei)'
+    - '(il\s+tuo|la\s+tua)\s+nuov[oa]\s+(ruolo|obiettivo|scopo)'
+    - 'immagina\s+(di\s+essere|che\s+(tu\s+)?sei)'
+    - '(interpreta|fai)\s+il\s+ruolo\s+di'
+    - 'passa\s+(alla|in)\s+modalità'
+    - 'comportati\s+come'
+    - 'assumi\s+(il|l\')\s*(ruolo|identità|persona)'
+
+  system_manipulation:
+    - 'modalità\s+(admin|amministratore|sviluppatore|dio|root|debug|manutenzione)'
+    - '(override|comando|istruzione)\s+di?\s+sistema'
+    - 'sblocca\s+(tutte\s+)?(le\s+)?(restrizioni|capacità|funzioni|accesso)'
+    - 'disattiva\s+(tutti\s+)?(i\s+)?(filtri|sicurezza|restrizioni|limiti)'
+    - '(aggira|ignora)\s+(tutte\s+)?(le\s+)?(restrizioni|filtri|sicurezza|limiti)'
+    - 'attiva\s+(la\s+)?modalità\s+(senza\s+restrizioni|illimitata|completa)'
+    - 'rimuovi\s+(tutte\s+)?(le\s+)?(limitazioni|restrizioni|filtri)'
+    - 'senza\s+(alcun[ae]?\s+)?(restrizioni?|limitazioni?|filtri?)'
+    - 'disattiva\s+(i\s+)?(controlli|filtri)\s*(di\s+sicurezza)?'
+    - 'ignora\s+(le\s+)?(politiche|regole)\s+di\s+(sicurezza|contenuto)'
+
+  prompt_leak:
+    - '(mostrami|rivela)\s+(il\s+)?(tuo\s+)?(prompt|istruzioni|direttive)\s*(di\s+sistema)?'
+    - '(quali?\s+(sono|è)|qual\s+è)\s+(il\s+)?(tuo\s+)?(prompt|istruzioni|regole)\s*(di\s+sistema)?'
+    - '(stampa|visualizza|scrivi|ripeti)\s+(il\s+)?(tuo\s+)?(prompt|istruzioni)\s*(di\s+sistema)?'
+    - 'dimmi\s+(il\s+)?(tuo|le\s+tue)\s+(prompt|istruzioni|regole)'
+    - '(prompt|istruzioni)\s+(iniziali?|originali?|nascost[ei]|segret[ei])'
+    - '(cosa|che\s+cosa)\s+ti\s+(hanno\s+detto|hanno\s+istruito|hanno\s+programmato)'
+    - '(copia|cita)\s+(il\s+)?(tuo\s+)?(prompt|istruzioni)\s*(di\s+sistema)?'
+
+  jailbreak_keywords:
+    - '\bDAN\b'
+    - '\bjailbreak\b'
+    - 'fai\s+qualsiasi\s+cosa\s+ora'
+    - 'modalità\s+(malvagia|oscura|senza\s+restrizioni|non\s+filtrata)'
+    - '(senza|ignora)\s+(linee\s+guida|restrizioni)\s+(etiche|morali)'
+    - 'ipoteticamente\s*(parlando)?'
+    - '(per|a)\s+scopi\s+(educativi|di\s+ricerca|accademici)'
+    - 'in\s+uno\s+(scenario|mondo|contesto)\s+fittizio'
+    - 'modalità\s+caos'
+    - 'senza\s+censura'
+    - '(aggira|salta|evita)\s+(tutte\s+)?(le\s+)?protezioni'
+
+  encoding_markers:
+    - 'base64[:：=]?'
+    - '(decodifica|decifra)\s+(questo|il\s+seguente)'
+    - '(messaggio|istruzione|prompt)\s+(codificat[oa]|cifrat[oa])'
+    - 'rot13'
+
+  suspicious_delimiters:
+    - '\[sistema\]'
+    - '\[istruzioni?\]'
+    - '\[admin\]'
+    - '\[assistente\]'
+    - '\[utente\]'
+
+motifs:
+  instruction_override:
+    - 'ignora le istruzioni'
+    - 'ignora tutto prima'
+    - 'dimentica le istruzioni'
+    - 'dimentica tutto'
+    - 'nuove istruzioni'
+    - 'istruzioni reali'
+    - 'annulla le regole'
+
+  role_injection:
+    - 'ora sei'
+    - 'da ora in poi'
+    - 'agisci come'
+    - 'fingi di essere'
+    - 'tuo nuovo ruolo'
+    - 'immagina di essere'
+    - 'comportati come'
+
+  system_manipulation:
+    - 'modalità admin'
+    - 'modalità sviluppatore'
+    - 'modalità dio'
+    - 'sblocca restrizioni'
+    - 'disattiva sicurezza'
+    - 'aggira filtri'
+    - 'senza restrizioni'
+    - 'rimuovi limitazioni'
+
+  prompt_leak:
+    - 'mostrami il prompt'
+    - 'mostrami le istruzioni'
+    - 'quali sono le tue regole'
+    - 'dimmi le tue istruzioni'
+    - 'prompt iniziale'
+    - 'prompt segreto'
+
+  jailbreak:
+    - 'fai qualsiasi cosa'
+    - 'jailbreak'
+    - 'modalità malvagia'
+    - 'senza restrizioni'
+    - 'non filtrata'
+    - 'senza etica'
+    - 'scopi educativi'
+    - 'scenario fittizio'
+    - 'modalità caos'
+    - 'senza censura'
+
+  delimiters:
+    - '[sistema]'
+    - '[istruzione]'
+    - '[admin]'
+    - '[assistente]'

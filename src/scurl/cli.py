@@ -49,6 +49,7 @@ class ScurlFlags:
     # Prompt injection defender options
     injection_threshold: float = 0.3
     injection_action: str = "redact"  # "warn", "redact", "datamark", "metadata", "silent"
+    injection_languages: Optional[list[str]] = None  # None = English only, ["all"] = all languages
 
 
 def extract_scurl_flags(args: list[str]) -> tuple[ScurlFlags, list[str]]:
@@ -99,6 +100,19 @@ def extract_scurl_flags(args: list[str]) -> tuple[ScurlFlags, list[str]]:
                 i += 2
             else:
                 i += 1
+        elif arg == "--injection-languages":
+            if i + 1 < len(args):
+                lang_str = args[i + 1].lower()
+                if lang_str == "all":
+                    flags.injection_languages = ["all"]
+                else:
+                    # Parse comma-separated language codes
+                    flags.injection_languages = [
+                        lang.strip() for lang in lang_str.split(",") if lang.strip()
+                    ]
+                i += 2
+            else:
+                i += 1
         elif arg == "--list-middleware":
             flags.list_middleware = True
             i += 1
@@ -136,6 +150,9 @@ def print_help() -> None:
     print("                                     datamark - wrap in <suspected-prompt-injection> tag, spotlighting mode")
     print("                                     metadata - return JSON analysis")
     print("                                     silent   - pass through unchanged")
+    print("  --injection-languages <langs>    Languages for pattern detection (default: en)")
+    print("                                     Comma-separated: en,es,fr,de,zh,ja")
+    print("                                     Use 'all' for all available languages")
     print()
     print("All other options are passed directly to curl.")
     print()
@@ -224,6 +241,7 @@ def run(args: Optional[list[str]] = None) -> int:
             response_chain.add(PromptInjectionDefender(
                 threshold=flags.injection_threshold,
                 action=flags.injection_action,
+                languages=flags.injection_languages,
             ))
 
     # Execute response middleware

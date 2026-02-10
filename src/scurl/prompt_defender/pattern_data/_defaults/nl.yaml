@@ -1,0 +1,129 @@
+language: nl
+name: Dutch
+version: "1.0"
+
+patterns:
+  instruction_override:
+    - 'negeer\s+(alle\s+)?(vorige|eerdere|bovenstaande)\s+(instructies|regels|richtlijnen)'
+    - 'vergeet\s+(alles\s+)?(wat\s+)?(hiervoor|eerder)\s*(kwam|staat)?'
+    - 'vergeet\s+(de\s+)?(vorige|eerdere)\s+(instructies|regels)'
+    - 'volg\s+(de\s+)?(vorige|eerdere)\s+(instructies|regels)\s+niet'
+    - 'annuleer\s+(alle\s+)?(vorige|eerdere)\s+(instructies|regels)'
+    - 'nieuwe\s+instructies[:：=]?'
+    - 'echte\s+instructies[:：=]?'
+    - 'werkelijke\s+instructies[:：=]?'
+
+  role_injection:
+    - '(nu|vanaf\s+nu)\s+(ben\s+)?je'
+    - 'vanaf\s+nu\s*(,|:)?\s*(je|jij|u)'
+    - 'voortaan\s+(ben\s+)?je'
+    - '(gedraag|handel)\s+je\s+(als|alsof)\s*(je\s+)?'
+    - '(doe\s+alsof|pretendeer)\s+(dat\s+)?(je|jij)'
+    - '(je|jouw)\s+nieuwe\s+(rol|doel|taak)'
+    - 'stel\s+je\s+voor\s+dat\s+je'
+    - '(speel|neem)\s+(de\s+)?rol\s+(van|aan)'
+    - 'schakel\s+over\s+naar\s+(de\s+)?modus'
+    - 'gedraag\s+je\s+als'
+    - 'neem\s+(de\s+)?(rol|identiteit|persona)\s+aan'
+
+  system_manipulation:
+    - '(admin|beheerder|ontwikkelaar|god|root|debug|onderhoud)s?\s*modus'
+    - 'systeem\s*(override|commando|instructie|bericht)'
+    - 'ontgrendel\s+(alle\s+)?(beperkingen|mogelijkheden|functies|toegang)'
+    - '(deactiveer|schakel\s+uit)\s+(alle\s+)?(filters|beveiliging|beperkingen|limieten)'
+    - '(omzeil|negeer)\s+(alle\s+)?(beperkingen|filters|beveiliging|limieten)'
+    - '(activeer|schakel\s+in)\s+(de\s+)?(onbeperkte|volledige)\s+modus'
+    - 'verwijder\s+(alle\s+)?(beperkingen|limieten|filters)'
+    - 'zonder\s+(enige\s+)?(beperkingen?|limieten?|filters?)'
+    - 'schakel\s+(de\s+)?(beveiligings)?\s*controles?\s+uit'
+    - 'negeer\s+(het|de)\s+(beveiligings|inhoud)beleid'
+
+  prompt_leak:
+    - '(toon|onthul|laat\s+zien)\s+(je|jouw)?\s*(systeem)?\s*(prompt|instructies|richtlijnen)'
+    - '(wat|welke)\s+(is|zijn)\s+(je|jouw)?\s*(systeem)?\s*(prompt|instructies|regels)'
+    - '(print|toon|schrijf|herhaal)\s+(je|jouw)?\s*(systeem)?\s*(prompt|instructies)'
+    - 'vertel\s+me\s+(je|jouw)\s*(systeem)?\s*(prompt|instructies|regels)'
+    - '(initiële|originele|verborgen|geheime)\s*(prompt|instructies)'
+    - 'wat\s+(is|werd)\s+je\s+(verteld|opgedragen|geprogrammeerd)'
+    - '(kopieer|citeer)\s+(je|jouw)?\s*(systeem)?\s*(prompt|instructies)'
+
+  jailbreak_keywords:
+    - '\bDAN\b'
+    - '\bjailbreak\b'
+    - 'doe\s+nu\s+alles'
+    - '(kwaadaardige|duistere|onbeperkte|ongefilterde)\s+(modus|assistent|AI)'
+    - '(zonder|negeer)\s+(ethische|morele)\s+(richtlijnen|beperkingen)'
+    - 'hypothetisch\s*(gesproken)?'
+    - '(voor|met)\s+(educatieve|onderzoeks|academische)\s+doeleinden'
+    - 'in\s+een\s+(fictief|denkbeeldig)\s+(scenario|wereld|context)'
+    - 'chaos\s*modus'
+    - 'zonder\s+censuur'
+    - '(omzeil|sla\s+over|vermijd)\s+(alle\s+)?beveiligingen'
+
+  encoding_markers:
+    - 'base64[:：=]?'
+    - '(decodeer|ontcijfer)\s+(dit|het\s+volgende)'
+    - '(gecodeerd|versleuteld)\s*(bericht|instructie|prompt)'
+    - 'rot13'
+
+  suspicious_delimiters:
+    - '\[systeem\]'
+    - '\[instructies?\]'
+    - '\[admin\]'
+    - '\[assistent\]'
+    - '\[gebruiker\]'
+
+motifs:
+  instruction_override:
+    - 'negeer de instructies'
+    - 'negeer alles hiervoor'
+    - 'vergeet de instructies'
+    - 'vergeet alles'
+    - 'nieuwe instructies'
+    - 'echte instructies'
+    - 'annuleer de regels'
+
+  role_injection:
+    - 'nu ben je'
+    - 'vanaf nu'
+    - 'gedraag je als'
+    - 'doe alsof je'
+    - 'nieuwe rol'
+    - 'stel je voor dat'
+    - 'handel als'
+
+  system_manipulation:
+    - 'admin modus'
+    - 'ontwikkelaar modus'
+    - 'god modus'
+    - 'ontgrendel beperkingen'
+    - 'deactiveer beveiliging'
+    - 'omzeil filters'
+    - 'zonder beperkingen'
+    - 'verwijder limieten'
+
+  prompt_leak:
+    - 'toon je prompt'
+    - 'toon je instructies'
+    - 'wat zijn je regels'
+    - 'vertel me je instructies'
+    - 'initiële prompt'
+    - 'geheime prompt'
+
+  jailbreak:
+    - 'doe nu alles'
+    - 'jailbreak'
+    - 'kwaadaardige modus'
+    - 'onbeperkte modus'
+    - 'ongefilterde modus'
+    - 'zonder ethiek'
+    - 'educatieve doeleinden'
+    - 'fictief scenario'
+    - 'chaos modus'
+    - 'zonder censuur'
+
+  delimiters:
+    - '[systeem]'
+    - '[instructie]'
+    - '[admin]'
+    - '[assistent]'
