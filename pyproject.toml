@@ -1,6 +1,6 @@
 [project]
 name = "sibylline-scurl"
-version = "0.3.1"
+version = "0.3.2"
 description = "A secure curl wrapper with middleware support and HTML-to-markdown extraction"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -22,7 +22,7 @@ classifiers = [
 dependencies = [
     "readability-lxml>=0.8.1",
     "html2text>=2024.2.26",
-    "sibylline-clean[all]>=0.1.1",
+    "sibylline-clean[all]>=0.1.2",
 ]
 
 [project.optional-dependencies]
