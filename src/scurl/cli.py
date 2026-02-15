@@ -11,6 +11,7 @@ from .middleware import (
 )
 from .request_middleware import SecretDefender
 from .response_middleware import ReadabilityExtractor
+from .prompt_defender import PromptInjectionDefender
 from .curl import parse_curl_args, execute_curl, curl_result_to_response_context
 
 
@@ -21,7 +22,7 @@ REQUEST_MIDDLEWARE = {
 
 RESPONSE_MIDDLEWARE = {
     "readability": ("ReadabilityExtractor", "Extracts clean markdown from HTML", ReadabilityExtractor),
-    "prompt-defender": ("PromptInjectionDefender", "Detects prompt injection in web content", None),  # Lazy loaded
+    "prompt-defender": ("PromptInjectionDefender", "Detects prompt injection in web content", PromptInjectionDefender),
 }
 
 
@@ -50,6 +51,7 @@ class ScurlFlags:
     injection_threshold: float = 0.3
     injection_action: str = "redact"  # "warn", "redact", "datamark", "metadata", "silent"
     injection_languages: Optional[list[str]] = None  # None = English only, ["all"] = all languages
+    injection_method: str = "heuristic"  # Detection method: "heuristic", "semi-markov-crf", etc.
 
 
 def extract_scurl_flags(args: list[str]) -> tuple[ScurlFlags, list[str]]:
@@ -113,6 +115,12 @@ def extract_scurl_flags(args: list[str]) -> tuple[ScurlFlags, list[str]]:
                 i += 2
             else:
                 i += 1
+        elif arg == "--injection-method":
+            if i + 1 < len(args):
+                flags.injection_method = args[i + 1]
+                i += 2
+            else:
+                i += 1
         elif arg == "--list-middleware":
             flags.list_middleware = True
             i += 1
@@ -142,8 +150,8 @@ def print_help() -> None:
     print("  --list-middleware      List available middleware and their slugs")
     print("  --help, -h             Show this help (use curl --help for curl options)")
     print()
-    print("Prompt injection detection (requires --enable prompt-defender):")
-    print("  --injection-threshold <0.0-1.0>  Detection threshold (default: 0.5)")
+    print("Prompt injection detection (enabled by default, --disable prompt-defender to turn off):")
+    print("  --injection-threshold <0.0-1.0>  Detection threshold (default: 0.3)")
     print("  --injection-action <action>      Action on detection (default: redact):")
     print("                                     warn     - wrap in <suspected-prompt-injection> tag, content unchanged")
     print("                                     redact   - wrap in <suspected-prompt-injection> tag, mask patterns with █")
@@ -153,6 +161,7 @@ def print_help() -> None:
     print("  --injection-languages <langs>    Languages for pattern detection (default: en)")
     print("                                     Comma-separated: en,es,fr,de,zh,ja")
     print("                                     Use 'all' for all available languages")
+    print("  --injection-method <method>      Detection method (default: heuristic)")
     print()
     print("All other options are passed directly to curl.")
     print()
@@ -161,9 +170,9 @@ def print_help() -> None:
     print("  scurl --raw https://example.com              # Raw HTML output")
     print("  scurl --disable trafilatura https://...      # Disable markdown extraction")
     print("  scurl --disable secret-defender https://...  # Disable secret scanning")
-    print("  scurl --enable prompt-defender https://...   # Enable injection detection")
+    print("  scurl --disable prompt-defender https://...  # Disable injection detection")
     print("  scurl --render https://github.com/user/repo    # Render JS-heavy pages")
-    print("  scurl --enable prompt-defender --injection-threshold 0.5 https://...")
+    print("  scurl --injection-threshold 0.5 https://...")
     print("  scurl -H 'Accept: application/json' https://api.example.com/data")
 
 
@@ -235,13 +244,12 @@ def run(args: Optional[list[str]] = None) -> int:
     if not flags.raw:
         if "readability" not in flags.disable:
             response_chain.add(ReadabilityExtractor(use_readability=flags.readability))
-        # Prompt defender is opt-in (requires --enable)
-        if "prompt-defender" in flags.enable:
-            from .prompt_defender import PromptInjectionDefender
+        if "prompt-defender" not in flags.disable:
             response_chain.add(PromptInjectionDefender(
                 threshold=flags.injection_threshold,
                 action=flags.injection_action,
                 languages=flags.injection_languages,
+                method=flags.injection_method,
             ))
 
     # Execute response middleware

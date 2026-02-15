@@ -22,37 +22,22 @@ classifiers = [
 dependencies = [
     "readability-lxml>=0.8.1",
     "html2text>=2024.2.26",
+    "sibylline-clean[all]>=0.1.1",
 ]
 
 [project.optional-dependencies]
 dev = [
     "pytest>=7.0.0",
     "pytest-cov>=4.0.0",
+    "pytest-mock>=3.0.0",
 ]
 # Headless browser for JS-rendered pages (--render flag)
 browser = [
     "playwright>=1.40.0",
 ]
-# Prompt injection detection with ML-based classification
-prompt-defender = [
-    "numpy>=1.24.0",
-    "onnxruntime>=1.17.0",
-    "tokenizers>=0.15.0",
-    "huggingface-hub>=0.20.0",
-    "confusable-homoglyphs>=3.2.0",
-    "scikit-learn>=1.3.0",
-    "rapidfuzz>=3.5.0",
-    "pyyaml>=6.0",
-]
 # Training the classifier (includes prompt-defender deps)
 training = [
-    "numpy>=1.24.0",
-    "onnxruntime>=1.17.0",
-    "tokenizers>=0.15.0",
-    "huggingface-hub>=0.20.0",
-    "confusable-homoglyphs>=3.2.0",
-    "scikit-learn>=1.3.0",
-    "datasets>=2.14.0",
+    "sibylline-clean[training]",
 ]
 
 [project.scripts]
@@ -71,9 +56,6 @@ packages = ["src/scurl"]
 [tool.hatch.build]
 include = [
     "src/scurl/**/*.py",
-    "src/scurl/**/*.yaml",
-    "src/scurl/**/*.onnx",
-    "src/scurl/**/*.json",
 ]
 
 [tool.pytest.ini_options]
